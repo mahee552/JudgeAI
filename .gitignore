@@ -36,3 +36,5 @@
 /obj/project.assets.json
 /obj/project.nuget.cache
 /obj/Debug/net8.0/ref/ChatbotBenchmarkAPI.dll
+/bin/Debug/net8.0
+/obj
