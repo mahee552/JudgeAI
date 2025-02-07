@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "kDg7eTFwsGHPjgMOg1WmGPMAkCpWJA71Xe/tXjtj7g8=",
+  "Source": "ChatbotBenchmarkAPI",
+  "BasePath": "_content/ChatbotBenchmarkAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

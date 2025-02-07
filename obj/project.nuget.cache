@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "08KhGGgMeOM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mahender.j\\ChatbotBenchmarkAPI\\ChatbotBenchmarkAPI\\ChatbotBenchmarkAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mahender.j\\.nuget\\packages\\fastendpoints\\5.34.0\\fastendpoints.5.34.0.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\fastendpoints.attributes\\5.34.0\\fastendpoints.attributes.5.34.0.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\fastendpoints.messaging.core\\5.34.0\\fastendpoints.messaging.core.5.34.0.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\microsoft.openapi\\1.6.14\\microsoft.openapi.1.6.14.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.21.0\\microsoft.visualstudio.azure.containers.tools.targets.1.21.0.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\sonaranalyzer.csharp\\10.6.0.109712\\sonaranalyzer.csharp.10.6.0.109712.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\stylecop.analyzers\\1.1.118\\stylecop.analyzers.1.1.118.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\swashbuckle.aspnetcore\\6.6.2\\swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.6.2\\swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.6.2\\swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
+    "C:\\Users\\mahender.j\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.6.2\\swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512"
+  ],
+  "logs": []
+}

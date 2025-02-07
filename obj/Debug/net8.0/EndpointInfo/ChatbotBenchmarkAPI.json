@@ -1,0 +1,130 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ChatbotBenchmarkAPI",
+    "version": "1.0"
+  },
+  "paths": {
+    "/compare": {
+      "post": {
+        "tags": [
+          "ChatbotBenchmarkAPI"
+        ],
+        "operationId": "ChatbotBenchmarkAPIFeaturesCompareCompareEndpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models": {
+      "get": {
+        "tags": [
+          "ChatbotBenchmarkAPI"
+        ],
+        "operationId": "ChatbotBenchmarkAPIFeaturesAIModelsGetModelsEndpoint",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompareRequest": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "nullable": true
+          },
+          "leftProvider": {
+            "$ref": "#/components/schemas/ProviderSelection"
+          },
+          "rightProvider": {
+            "$ref": "#/components/schemas/ProviderSelection"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CompareResponse": {
+        "type": "object",
+        "properties": {
+          "leftResult": {
+            "$ref": "#/components/schemas/ProviderResult"
+          },
+          "rightResult": {
+            "$ref": "#/components/schemas/ProviderResult"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProviderResult": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalTokens": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cost": {
+            "type": "number",
+            "format": "double"
+          },
+          "timeTakenMs": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProviderSelection": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "nullable": true
+          },
+          "model": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
