@@ -30,6 +30,8 @@ builder.Services.AddTransient<OpenAIService>();
 
 builder.Services.AddTransient<DeepSeekService>();
 
+builder.Services.AddTransient<AnthropicService>();
+
 builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();
 
 var app = builder.Build();

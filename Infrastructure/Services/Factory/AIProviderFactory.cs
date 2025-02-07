@@ -40,6 +40,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Factory
             {
                 "openai" => _serviceProvider.GetRequiredService<OpenAIService>(),
                 "deepseek" => _serviceProvider.GetRequiredService<DeepSeekService>(),
+                "anthropic" => _serviceProvider.GetRequiredService<AnthropicService>(),
                 _ => throw new NotSupportedException($"Provider '{providerName}' is not supported.")
             };
         }
