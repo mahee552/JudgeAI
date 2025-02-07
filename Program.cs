@@ -28,6 +28,8 @@ builder.Services.Configure<AIEndpointsConfig>(builder.Configuration.GetSection("
 
 builder.Services.AddTransient<OpenAIService>();
 
+builder.Services.AddTransient<DeepSeekService>();
+
 builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();
 
 var app = builder.Build();

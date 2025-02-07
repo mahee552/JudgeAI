@@ -16,22 +16,26 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using Newtonsoft.Json;
 
     /// <summary>
-    /// Service implementation for interacting with OpenAI's API endpoints.
-    /// Handles model calls, token counting, and cost calculations specific to OpenAI models.
+    /// Provides service implementation for interacting with the DeepSeek AI provider.
     /// </summary>
-    public class OpenAIService : IAIProviderService
+    /// <remarks>
+    /// This service handles communication with the DeepSeek API, including authentication,
+    /// request formatting, and response processing for AI-generated content.
+    /// </remarks>
+    /// <seealso cref="IAIProviderService"/>
+    public class DeepSeekService : IAIProviderService
     {
         private readonly IConfiguration _configuration;
         private readonly AIEndpointsConfig _endpointsConfig;
-        private readonly ILogger<OpenAIService> _logger;
+        private readonly ILogger<DeepSeekService> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OpenAIService"/> class.
+        /// Initializes a new instance of the <see cref="DeepSeekService"/> class.
         /// </summary>
         /// <param name="configuration">IConfiguration.</param>
         /// <param name="endpointsConfig">AIEndpointsConfig.</param>
         /// <param name="logger">ILogger.</param>
-        public OpenAIService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, ILogger<OpenAIService> logger)
+        public DeepSeekService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, ILogger<DeepSeekService> logger)
         {
             _configuration = configuration;
             _endpointsConfig = endpointsConfig.Value;
@@ -39,9 +43,9 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         }
 
         /// <summary>
-        /// Calls OpenAI's API with the specified model and prompt to generate a response.
+        /// Calls DeepSeek's API with the specified model and prompt to generate a response.
         /// </summary>
-        /// <param name="modelName">The name of the OpenAI model to use (e.g., "gpt-4", "gpt-3.5-turbo").</param>
+        /// <param name="modelName">The name of the DeepSeek model to use (e.g., "deepseek-chat", "deepseek-coder").</param>
         /// <param name="prompt">The input prompt to send to the model.</param>
         /// <returns>A ProviderResult containing the model's response, token usage, calculated cost, and time taken.</returns>
         /// <exception cref="HttpRequestException">Thrown when the API request fails.</exception>
@@ -51,17 +55,17 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             try
             {
                 // Validate supported models
-                if (modelName is not "gpt-3.5-turbo" and not "gpt-4")
+                if (modelName is not "deepseek-chat" and not "deepseek-coder")
                 {
                     throw new ArgumentException($"Unsupported model: {modelName}");
                 }
 
                 // Get API key from configuration/environment
-                string apiKey = _configuration["APIKeys:OpenAI"] ?? throw new KeyNotFoundException("Error: API Key is missing");
+                string apiKey = _configuration["APIKeys:DeepSeek"] ?? throw new KeyNotFoundException("Error: DeepSeek API Key is missing");
 
                 var stopwatch = Stopwatch.StartNew();
 
-                // Prepare the request body
+                // Prepare the request body (similar structure to OpenAI)
                 var requestBody = new
                 {
                     model = modelName,
@@ -80,46 +84,49 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
-                // Send POST request
-                string providerbaseUrl = $"{_endpointsConfig.Providers["OpenAI"].BaseUrl}" ?? throw new KeyNotFoundException();
-                string endpoint = $"{_endpointsConfig.Providers["OpenAI"].Endpoints["chat"]}" ?? throw new KeyNotFoundException();
+                // Send POST request to DeepSeek endpoint
+                string providerBaseUrl = _endpointsConfig.Providers["DeepSeek"].BaseUrl
+                    ?? throw new KeyNotFoundException("DeepSeek base URL not configured");
+                string endpoint = _endpointsConfig.Providers["DeepSeek"].Endpoints["chat"]
+                    ?? throw new KeyNotFoundException("DeepSeek chat endpoint not configured");
 
-                using var response = await httpClient.PostAsync($"{providerbaseUrl}{endpoint}", httpContent);
+                using var response = await httpClient.PostAsync($"{providerBaseUrl}{endpoint}", httpContent);
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    throw new HttpRequestException($"OpenAI API request failed with status code {response.StatusCode}: {errorContent}");
+                    throw new HttpRequestException($"DeepSeek API request failed with status code {response.StatusCode}: {errorContent}");
                 }
 
                 // Read and deserialize the API response
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var completionResponse = JsonConvert.DeserializeObject<OpenAICompletionResponse>(jsonResponse) ?? new OpenAICompletionResponse();
+                var completionResponse = JsonConvert.DeserializeObject<DeepSeekCompletionResponse>(jsonResponse)
+                    ?? new DeepSeekCompletionResponse();
                 stopwatch.Stop();
 
-                if (completionResponse == null || completionResponse.Choices == null || completionResponse.Choices.Count <= 0)
+                if (completionResponse?.Choices == null || completionResponse.Choices.Count == 0)
                 {
-                    throw new InvalidOperationException("Failed to parse a valid response from OpenAI API.");
+                    throw new InvalidOperationException("Failed to parse a valid response from DeepSeek API.");
                 }
 
-                // Extract token usage data (if available)
+                // Extract token usage data (assuming similar structure to OpenAI)
                 int promptTokens = completionResponse.Usage?.PromptTokens ?? 0;
                 int completionTokens = completionResponse.Usage?.CompletionTokens ?? 0;
                 int totalTokens = completionResponse.Usage?.TotalTokens ?? (promptTokens + completionTokens);
 
-                // Calculate cost based on dynamic pricing rules
+                // Calculate cost based on DeepSeek's pricing (example rates)
                 decimal cost = 0m;
-                if (modelName == "gpt-3.5-turbo")
+                if (modelName == "deepseek-chat")
                 {
-                    // GPT-3.5-turbo: $0.002 per 1K tokens
-                    cost = totalTokens / 1000m * 0.002m;
+                    // Example pricing: $0.001 per 1K prompt tokens, $0.002 per 1K completion tokens
+                    cost = (promptTokens / 1000m * 0.001m) + (completionTokens / 1000m * 0.002m);
                 }
-                else if (modelName == "gpt-4")
+                else if (modelName == "deepseek-coder")
                 {
-                    // GPT-4: $0.03 per 1K prompt tokens and $0.06 per 1K completion tokens
-                    cost = (promptTokens / 1000m * 0.03m) + (completionTokens / 1000m * 0.06m);
+                    // Example coding model pricing: $0.0015 per 1K prompt tokens, $0.003 per 1K completion tokens
+                    cost = (promptTokens / 1000m * 0.0015m) + (completionTokens / 1000m * 0.003m);
                 }
 
-                // Prepare the provider result using the first available choice
+                // Prepare the provider result
                 var providerResult = new ProviderResult
                 {
                     Message = completionResponse.Choices[0].Message.Content,
@@ -137,12 +144,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogError(ex, "Error: config keys missing for OpenAI Service");
+                _logger.LogError(ex, "Error: config keys missing for DeepSeek Service");
                 return new ProviderResult();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in OpenAI service.");
+                _logger.LogError(ex, "Error in DeepSeek service.");
                 return new ProviderResult();
             }
         }

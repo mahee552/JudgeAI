@@ -39,7 +39,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Factory
             return providerName?.ToLower(CultureInfo.InvariantCulture) switch
             {
                 "openai" => _serviceProvider.GetRequiredService<OpenAIService>(),
-                "deepseek" => _serviceProvider.GetRequiredService<OpenAIService>(),
+                "deepseek" => _serviceProvider.GetRequiredService<DeepSeekService>(),
                 _ => throw new NotSupportedException($"Provider '{providerName}' is not supported.")
             };
         }
