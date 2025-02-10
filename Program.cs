@@ -32,6 +32,8 @@ builder.Services.AddTransient<DeepSeekService>();
 
 builder.Services.AddTransient<AnthropicService>();
 
+builder.Services.AddTransient<QwenAIService>();
+
 builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();
 
 var app = builder.Build();

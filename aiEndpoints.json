@@ -21,12 +21,19 @@
           "completions": "/v1/complete"
         }
       },
-        "GoogleGemini": {
-          "BaseUrl": "https://generativelanguage.googleapis.com/v1beta",
-          "Endpoints": {
-            "generateText": "/text/generate"
-          }
+      "QwenAI": {
+        "BaseUrl": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+        "Endpoints": {
+          "completions": "/text/generation",
+          "chat": "/chat/completions"
+        }
+      },
+      "GoogleGemini": {
+        "BaseUrl": "https://generativelanguage.googleapis.com/v1beta",
+        "Endpoints": {
+          "generateText": "/text/generate"
         }
       }
+    }
     }
 }
