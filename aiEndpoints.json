@@ -14,12 +14,19 @@
           "chat": "/chat/completions"
         }
       },
-      "GoogleGemini": {
-        "BaseUrl": "https://generativelanguage.googleapis.com/v1beta",
+      "Anthropic": {
+        "BaseUrl": "https://api.anthropic.com",
         "Endpoints": {
-          "generateText": "/text/generate"
+          "messages": "/v1/messages",
+          "completions": "/v1/complete"
+        }
+      },
+        "GoogleGemini": {
+          "BaseUrl": "https://generativelanguage.googleapis.com/v1beta",
+          "Endpoints": {
+            "generateText": "/text/generate"
+          }
         }
       }
-    }
     }
 }

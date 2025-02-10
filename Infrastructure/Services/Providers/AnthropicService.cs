@@ -84,7 +84,7 @@
                 // Send POST request to Anthropic endpoint
                 string providerBaseUrl = _endpointsConfig.Providers["Anthropic"].BaseUrl
                     ?? throw new KeyNotFoundException("Anthropic base URL not configured");
-                string endpoint = _endpointsConfig.Providers["Anthropic"].Endpoints["chat"]
+                string endpoint = _endpointsConfig.Providers["Anthropic"].Endpoints["messages"]
                     ?? throw new KeyNotFoundException("Anthropic chat endpoint not configured");
 
                 using var response = await httpClient.PostAsync($"{providerBaseUrl}{endpoint}", httpContent);
