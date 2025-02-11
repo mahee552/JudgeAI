@@ -42,6 +42,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Factory
                 "deepseek" => _serviceProvider.GetRequiredService<DeepSeekService>(),
                 "anthropic" => _serviceProvider.GetRequiredService<AnthropicService>(),
                 "qwenai" => _serviceProvider.GetRequiredService<QwenAIService>(),
+                "google" => _serviceProvider.GetRequiredService<GeminiService>(),
                 _ => throw new NotSupportedException($"Provider '{providerName}' is not supported.")
             };
         }

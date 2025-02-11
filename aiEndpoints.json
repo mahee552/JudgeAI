@@ -28,12 +28,12 @@
           "chat": "/chat/completions"
         }
       },
-      "GoogleGemini": {
-        "BaseUrl": "https://generativelanguage.googleapis.com/v1beta",
+      "Google": {
+        "BaseUrl": "https://generativelanguage.googleapis.com/",
         "Endpoints": {
-          "generateText": "/text/generate"
+          "chat": "v1beta/models/"
         }
       }
     }
-    }
+  }
 }

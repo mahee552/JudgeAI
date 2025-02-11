@@ -34,6 +34,8 @@ builder.Services.AddTransient<AnthropicService>();
 
 builder.Services.AddTransient<QwenAIService>();
 
+builder.Services.AddTransient<GeminiService>();
+
 builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();
 
 var app = builder.Build();
