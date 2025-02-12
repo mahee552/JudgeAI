@@ -1,4 +1,9 @@
-﻿namespace ChatbotBenchmarkAPI.Models.CompletionResponses
+﻿// Copyright (c) Happy Solutions.
+// All rights reserved.
+// This code is proprietary and confidential.
+// Unauthorized copying of this file, via any medium, is strictly prohibited.
+
+namespace ChatbotBenchmarkAPI.Models.CompletionResponses
 {
     using Newtonsoft.Json;
 

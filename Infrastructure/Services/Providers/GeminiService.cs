@@ -1,7 +1,13 @@
-﻿namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
+﻿// Copyright (c) Happy Solutions.
+// All rights reserved.
+// This code is proprietary and confidential.
+// Unauthorized copying of this file, via any medium, is strictly prohibited.
+
+namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 {
     using System.Diagnostics;
     using System.Text;
+    using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
@@ -18,6 +24,7 @@
         private readonly IConfiguration _configuration;
         private readonly AIEndpointsConfig _endpointsConfig;
         private readonly ILogger<GeminiService> _logger;
+        private readonly AIModelValidator _modelValidator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GeminiService"/> class.
@@ -25,14 +32,17 @@
         /// <param name="configuration">IConfiguration.</param>
         /// <param name="endpointsConfig">AIEndpointsConfig.</param>
         /// <param name="logger">ILogger.</param>
+        /// <param name="modelValidator">The model validation service.</param>
         public GeminiService(
             IConfiguration configuration,
             IOptions<AIEndpointsConfig> endpointsConfig,
-            ILogger<GeminiService> logger)
+            ILogger<GeminiService> logger,
+            AIModelValidator modelValidator)
         {
             _configuration = configuration;
             _endpointsConfig = endpointsConfig.Value;
             _logger = logger;
+            _modelValidator = modelValidator;
         }
 
         /// <summary>
@@ -48,7 +58,7 @@
             try
             {
                 // Validate supported models
-                if (modelName is not "gemini-1.5-pro" and not "gemini-2.0-flash" and not "gemini-2.0-pro-exp-02-05")
+                if (!_modelValidator.IsModelSupported("Google", modelName))
                 {
                     throw new ArgumentException($"Unsupported model: {modelName}");
                 }

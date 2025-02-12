@@ -3,6 +3,7 @@
 // This code is proprietary and confidential.
 // Unauthorized copying of this file, via any medium, is strictly prohibited.
 
+using ChatbotBenchmarkAPI.Business.Validation;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Factory;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Providers;
@@ -35,6 +36,8 @@ builder.Services.AddTransient<AnthropicService>();
 builder.Services.AddTransient<QwenAIService>();
 
 builder.Services.AddTransient<GeminiService>();
+
+builder.Services.AddTransient<AIModelValidator>();
 
 builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();
 

@@ -8,6 +8,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Diagnostics;
     using System.Net.Http.Headers;
     using System.Text;
+    using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
@@ -24,6 +25,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         private readonly IConfiguration _configuration;
         private readonly AIEndpointsConfig _endpointsConfig;
         private readonly ILogger<QwenAIService> _logger;
+        private readonly AIModelValidator _modelValidator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QwenAIService"/> class.
@@ -31,11 +33,13 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// <param name="configuration">IConfiguration.</param>
         /// <param name="endpointsConfig">AIEndpointsConfig.</param>
         /// <param name="logger">ILogger.</param>
-        public QwenAIService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, ILogger<QwenAIService> logger)
+        /// <param name="modelValidator">The model validation service.</param>
+        public QwenAIService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, ILogger<QwenAIService> logger, AIModelValidator modelValidator)
         {
             _configuration = configuration;
             _endpointsConfig = endpointsConfig.Value;
             _logger = logger;
+            _modelValidator = modelValidator;
         }
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             try
             {
                 // Validate supported models
-                if (modelName is not "qwen-turbo" and not "qwen-plus" and not "qwen-max")
+                if (!_modelValidator.IsModelSupported("QwenAI", modelName))
                 {
                     throw new ArgumentException($"Unsupported model: {modelName}");
                 }
