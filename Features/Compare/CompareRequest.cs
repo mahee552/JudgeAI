@@ -34,7 +34,7 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         /// <summary>
         /// Gets or sets the name of the AI provider (e.g., "OpenAI", "Deepseek").
         /// </summary>
-        public string Provider { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the specific model identifier for the selected provider (e.g., "gpt-4", "R1", "gpt-3.5-turbo").

@@ -38,8 +38,8 @@ namespace ChatbotBenchmarkAPI.Features.Compare
             try
             {
                 // Resolve provider services using the factory.
-                var leftProviderService = _providerFactory.GetProviderService(request.LeftProvider.Provider);
-                var rightProviderService = _providerFactory.GetProviderService(request.RightProvider.Provider);
+                var leftProviderService = _providerFactory.GetProviderService(request.LeftProvider.Name);
+                var rightProviderService = _providerFactory.GetProviderService(request.RightProvider.Name);
 
                 // Option 1: Run concurrently
                 var leftTask = leftProviderService.CallModelAsync(request.LeftProvider.Model, request.Prompt);
