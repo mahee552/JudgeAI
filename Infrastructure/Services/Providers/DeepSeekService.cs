@@ -56,6 +56,8 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// <exception cref="ArgumentException">Thrown when the model name is invalid or unsupported.</exception>
         public async Task<ProviderResult> CallModelAsync(string modelName, string prompt)
         {
+            var stopwatch = new Stopwatch();
+
             try
             {
                 // Validate supported models
@@ -66,8 +68,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 
                 // Get API key from configuration/environment
                 string apiKey = _configuration["APIKeys:DeepSeek"] ?? throw new KeyNotFoundException("Error: DeepSeek API Key is missing");
-
-                var stopwatch = Stopwatch.StartNew();
 
                 // Prepare the request body (similar structure to OpenAI)
                 var requestBody = new
@@ -94,7 +94,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 string endpoint = _endpointsConfig.Providers["DeepSeek"].Endpoints["chat"]
                     ?? throw new KeyNotFoundException("DeepSeek chat endpoint not configured");
 
+                stopwatch = Stopwatch.StartNew();
                 using var response = await httpClient.PostAsync($"{providerBaseUrl}{endpoint}", httpContent);
+                stopwatch.Stop();
+
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
@@ -105,7 +108,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var completionResponse = JsonConvert.DeserializeObject<DeepSeekCompletionResponse>(jsonResponse)
                     ?? new DeepSeekCompletionResponse();
-                stopwatch.Stop();
 
                 if (completionResponse?.Choices == null || completionResponse.Choices.Count == 0)
                 {
@@ -155,6 +157,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             {
                 _logger.LogError(ex, "Error in DeepSeek service.");
                 return new ProviderResult();
+            }
+            finally
+            {
+                stopwatch.Stop();
             }
         }
     }

@@ -56,6 +56,8 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// <exception cref="ArgumentException">Thrown when the model name is invalid or unsupported.</exception>
         public async Task<ProviderResult> CallModelAsync(string modelName, string prompt)
         {
+            var stopwatch = new Stopwatch();
+
             try
             {
                 // Validate supported models
@@ -66,8 +68,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 
                 // Get API key from configuration/environment
                 string apiKey = _configuration["APIKeys:Anthropic"] ?? throw new KeyNotFoundException("Error: Anthropic API Key is missing");
-
-                var stopwatch = Stopwatch.StartNew();
 
                 // Prepare the request body (Anthropic-specific structure)
                 var requestBody = new
@@ -96,7 +96,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 string endpoint = _endpointsConfig.Providers["Anthropic"].Endpoints["messages"]
                     ?? throw new KeyNotFoundException("Anthropic chat endpoint not configured");
 
+                stopwatch = Stopwatch.StartNew();
                 using var response = await httpClient.PostAsync($"{providerBaseUrl}{endpoint}", httpContent);
+                stopwatch.Stop();
+
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
@@ -107,7 +110,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var completionResponse = JsonConvert.DeserializeObject<AnthropicCompletionResponse>(jsonResponse)
                     ?? new AnthropicCompletionResponse();
-                stopwatch.Stop();
 
                 if (completionResponse?.Content == null || completionResponse.Content.Count == 0)
                 {
@@ -162,6 +164,11 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             {
                 _logger.LogError(ex, "Error in Anthropic service.");
                 return new ProviderResult();
+            }
+            finally
+            {
+                // In case of exception, stop the watch.
+                stopwatch.Stop();
             }
         }
     }

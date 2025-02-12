@@ -52,6 +52,8 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// <exception cref="ArgumentException">Thrown when the model name is invalid or unsupported.</exception>
         public async Task<ProviderResult> CallModelAsync(string modelName, string prompt)
         {
+            var stopwatch = new Stopwatch();
+
             try
             {
                 // Validate supported models
@@ -62,8 +64,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 
                 // Get API key from configuration/environment
                 string apiKey = _configuration["APIKeys:QwenAI"] ?? throw new KeyNotFoundException("Error: QwenAI API Key is missing");
-
-                var stopwatch = Stopwatch.StartNew();
 
                 // Prepare the request body
                 var requestBody = new
@@ -94,7 +94,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 string endpoint = _endpointsConfig.Providers["QwenAI"].Endpoints["chat"]
                     ?? throw new KeyNotFoundException("QwenAI chat endpoint not configured");
 
+                stopwatch = Stopwatch.StartNew();
                 using var response = await httpClient.PostAsync($"{providerBaseUrl}{endpoint}", httpContent);
+                stopwatch.Stop();
+
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
@@ -105,7 +108,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var completionResponse = JsonConvert.DeserializeObject<QwenAICompletionResponse>(jsonResponse)
                     ?? new QwenAICompletionResponse();
-                stopwatch.Stop();
 
                 if (completionResponse?.Choices == null || completionResponse.Choices.Count == 0)
                 {
@@ -162,6 +164,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             {
                 _logger.LogError(ex, "Error in QwenAI service.");
                 return new ProviderResult();
+            }
+            finally
+            {
+                stopwatch.Stop();
             }
         }
     }

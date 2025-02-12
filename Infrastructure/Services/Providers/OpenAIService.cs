@@ -52,6 +52,8 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// <exception cref="ArgumentException">Thrown when the model name is invalid or unsupported.</exception>
         public async Task<ProviderResult> CallModelAsync(string modelName, string prompt)
         {
+            var stopwatch = new Stopwatch();
+
             try
             {
                 // Validate supported models
@@ -62,8 +64,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 
                 // Get API key from configuration/environment
                 string apiKey = _configuration["APIKeys:OpenAI"] ?? throw new KeyNotFoundException("Error: API Key is missing");
-
-                var stopwatch = Stopwatch.StartNew();
 
                 // Prepare the request body
                 var requestBody = new
@@ -88,7 +88,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 string providerbaseUrl = $"{_endpointsConfig.Providers["OpenAI"].BaseUrl}" ?? throw new KeyNotFoundException();
                 string endpoint = $"{_endpointsConfig.Providers["OpenAI"].Endpoints["chat"]}" ?? throw new KeyNotFoundException();
 
+                stopwatch = Stopwatch.StartNew();
                 using var response = await httpClient.PostAsync($"{providerbaseUrl}{endpoint}", httpContent);
+                stopwatch.Stop();
+
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
@@ -98,7 +101,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 // Read and deserialize the API response
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var completionResponse = JsonConvert.DeserializeObject<OpenAICompletionResponse>(jsonResponse) ?? new OpenAICompletionResponse();
-                stopwatch.Stop();
 
                 if (completionResponse == null || completionResponse.Choices == null || completionResponse.Choices.Count <= 0)
                 {
@@ -148,6 +150,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             {
                 _logger.LogError(ex, "Error in OpenAI service.");
                 return new ProviderResult();
+            }
+            finally
+            {
+                stopwatch.Stop();
             }
         }
     }

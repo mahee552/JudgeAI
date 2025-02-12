@@ -55,6 +55,8 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// <exception cref="ArgumentException">Thrown when the model name is invalid or unsupported.</exception>
         public async Task<ProviderResult> CallModelAsync(string modelName, string prompt)
         {
+            var stopwatch = new Stopwatch();
+
             try
             {
                 // Validate supported models
@@ -66,8 +68,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 // Get API key from configuration
                 string apiKey = _configuration["APIKeys:Google"]
                     ?? throw new KeyNotFoundException("Error: Google API key is missing");
-
-                var stopwatch = Stopwatch.StartNew();
 
                 // Build Gemini API request
                 var requestBody = new
@@ -99,7 +99,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 
                 // Send request to Gemini API
                 string requestUrl = $"{baseUrl}{endpoint}{modelName}:generateContent?key={apiKey}";
+
+                stopwatch = Stopwatch.StartNew();
                 using var response = await httpClient.PostAsync(requestUrl, httpContent);
+                stopwatch.Stop();
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -120,8 +123,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 {
                     throw new InvalidOperationException("Invalid response from Gemini API");
                 }
-
-                stopwatch.Stop();
 
                 // Calculate tokens and cost
                 int promptTokens = completionResponse.UsageMetadata?.PromptTokenCount ?? 0;
@@ -160,6 +161,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             {
                 _logger.LogError(ex, "Error in Gemini service: {Message}", ex.Message);
                 return new ProviderResult();
+            }
+            finally
+            {
+                stopwatch.Stop();
             }
         }
     }
