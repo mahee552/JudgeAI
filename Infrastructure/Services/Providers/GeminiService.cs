@@ -7,6 +7,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 {
     using System.Diagnostics;
     using System.Text;
+    using ChatbotBenchmarkAPI.Business.Formatters;
     using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
@@ -144,7 +145,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                     Message = completionResponse.Candidates[0].Content.Parts[0].Text,
                     TotalTokens = totalTokens,
                     Cost = cost,
-                    TimeTakenMs = stopwatch.ElapsedMilliseconds,
+                    TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
                 };
             }
             catch (ArgumentException ex)

@@ -42,8 +42,8 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         public decimal Cost { get; set; }
 
         /// <summary>
-        /// Gets or sets the time taken in milliseconds to complete the API call.
+        /// Gets or sets the time taken to complete the API call.
         /// </summary>
-        public long TimeTakenMs { get; set; }
+        public string TimeTaken { get; set; } = string.Empty;
     }
 }

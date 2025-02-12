@@ -8,6 +8,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Diagnostics;
     using System.Net.Http.Headers;
     using System.Text;
+    using ChatbotBenchmarkAPI.Business.Formatters;
     using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
@@ -138,7 +139,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                     Message = completionResponse.Choices[0].Message.Content,
                     TotalTokens = totalTokens,
                     Cost = cost,
-                    TimeTakenMs = stopwatch.ElapsedMilliseconds,
+                    TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
                 };
 
                 return providerResult;
