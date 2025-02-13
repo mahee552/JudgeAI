@@ -9,11 +9,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Net.Http.Headers;
     using System.Text;
     using ChatbotBenchmarkAPI.Business.Formatters;
+    using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
-    using ChatbotBenchmarkAPI.Models.Configurations;
+    using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -121,24 +122,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int totalTokens = completionResponse.Usage?.TotalTokens ?? (promptTokens + completionTokens);
 
                 // Calculate cost based on QwenAI's pricing
-                decimal cost = 0m;
-                switch (modelName)
-                {
-                    case "qwen-turbo":
-                        // Example pricing: $0.003 per 1K tokens
-                        cost = totalTokens / 1000m * 0.003m;
-                        break;
-                    case "qwen-plus":
-                        // Example pricing: $0.006 per 1K tokens
-                        cost = totalTokens / 1000m * 0.006m;
-                        break;
-                    case "qwen-max":
-                        // Example pricing: $0.012 per 1K tokens
-                        cost = totalTokens / 1000m * 0.012m;
-                        break;
-                    default:
-                        break;
-                }
+                decimal cost = PricingService.CalculateCost("QwenAI", modelName, promptTokens, completionTokens);
 
                 // Prepare the provider result
                 var providerResult = new ProviderResult

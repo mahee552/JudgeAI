@@ -9,11 +9,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Net.Http.Headers;
     using System.Text;
     using ChatbotBenchmarkAPI.Business.Formatters;
+    using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
-    using ChatbotBenchmarkAPI.Models.Configurations;
+    using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -114,17 +115,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int totalTokens = completionResponse.Usage?.TotalTokens ?? (promptTokens + completionTokens);
 
                 // Calculate cost based on dynamic pricing rules
-                decimal cost = 0m;
-                if (modelName == "gpt-3.5-turbo")
-                {
-                    // GPT-3.5-turbo: $0.002 per 1K tokens
-                    cost = totalTokens / 1000m * 0.002m;
-                }
-                else if (modelName == "gpt-4")
-                {
-                    // GPT-4: $0.03 per 1K prompt tokens and $0.06 per 1K completion tokens
-                    cost = (promptTokens / 1000m * 0.03m) + (completionTokens / 1000m * 0.06m);
-                }
+                decimal cost = PricingService.CalculateCost("OpenAI", modelName, promptTokens, completionTokens);
 
                 // Prepare the provider result using the first available choice
                 var providerResult = new ProviderResult

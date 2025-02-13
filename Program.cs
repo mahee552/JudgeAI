@@ -7,7 +7,7 @@ using ChatbotBenchmarkAPI.Business.Validation;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Factory;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Providers;
-using ChatbotBenchmarkAPI.Models.Configurations;
+using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
 using FastEndpoints;
 
 var builder = WebApplication.CreateBuilder(args);

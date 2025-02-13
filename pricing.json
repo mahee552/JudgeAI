@@ -1,0 +1,76 @@
+{
+  "OpenAI": {
+    "gpt-3.5-turbo": {
+      "input_per_1k_tokens": 0.003,
+      "output_per_1k_tokens": 0.006
+    },
+    "gpt-4": {
+      "input_per_1k_tokens": 0.03,
+      "output_per_1k_tokens": 0.06
+    },
+    "gpt-4o": {
+      "input_per_1k_tokens": 0.0025,
+      "output_per_1k_tokens": 0.01
+    },
+    "gpt-4o-mini": {
+      "input_per_1k_tokens": 0.00015,
+      "output_per_1k_tokens": 0.0006
+    },
+    "o1": {
+      "input_per_1k_tokens": 0.015,
+      "output_per_1k_tokens": 0.06
+    }
+  },
+  "DeepSeek": {
+    "deepseek-chat": {
+      "input_per_1k_tokens": 0.00027,
+      "output_per_1k_tokens": 0.0011
+    },
+    "deepseek-reasoner": {
+      "input_per_1k_tokens": 0.00055,
+      "output_per_1k_tokens": 0.00219
+    }
+  },
+  "Anthropic": {
+    "claude-3-haiku-20240307": {
+      "input_per_1k_tokens": 0.0008,
+      "output_per_1k_tokens": 0.004
+    },
+    "claude-3-sonnet-20240229": {
+      "input_per_1k_tokens": 0.003,
+      "output_per_1k_tokens": 0.015
+    },
+    "claude-3-opus-20240229": {
+      "input_per_1k_tokens": 0.015,
+      "output_per_1k_tokens": 0.075
+    }
+  },
+  "QwenAI": {
+    "qwen-turbo": {
+      "input_per_1k_tokens": 0.00005,
+      "output_per_1k_tokens": 0.0002
+    },
+    "qwen-plus": {
+      "input_per_1k_tokens": 0.0004,
+      "output_per_1k_tokens": 0.0012
+    },
+    "qwen-max": {
+      "input_per_1k_tokens": 0.0016,
+      "output_per_1k_tokens": 0.0064
+    }
+  },
+  "Google": {
+    "gemini-1.5-pro": {
+      "input_per_1k_tokens": 0.00125,
+      "output_per_1k_tokens": 0.005
+    },
+    "gemini-2.0-flash": {
+      "input_per_1k_tokens": 0.0001,
+      "output_per_1k_tokens": 0.0004
+    },
+    "gemini-2.0-pro-exp-02-05": {
+      "input_per_1k_tokens": 0,
+      "output_per_1k_tokens": 0
+    }
+  }
+}

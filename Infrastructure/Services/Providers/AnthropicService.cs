@@ -9,11 +9,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Net.Http.Headers;
     using System.Text;
     using ChatbotBenchmarkAPI.Business.Formatters;
+    using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
-    using ChatbotBenchmarkAPI.Models.Configurations;
+    using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -123,22 +124,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int totalTokens = inputTokens + outputTokens;
 
                 // Calculate cost based on Anthropic's pricing
-                decimal cost = 0m;
-                if (modelName == "claude-3-haiku-20240307")
-                {
-                    // Pricing: $0.00025 per input 1K tokens, $0.00125 per output 1K tokens
-                    cost = (inputTokens / 1000m * 0.00025m) + (outputTokens / 1000m * 0.00125m);
-                }
-                else if (modelName == "claude-3-sonnet-20240229")
-                {
-                    // Pricing: $0.003 per input 1K tokens, $0.015 per output 1K tokens
-                    cost = (inputTokens / 1000m * 0.003m) + (outputTokens / 1000m * 0.015m);
-                }
-                else if (modelName == "claude-3-opus-20240229")
-                {
-                    // Pricing: $0.015 per input 1K tokens, $0.075 per output 1K tokens
-                    cost = (inputTokens / 1000m * 0.015m) + (outputTokens / 1000m * 0.075m);
-                }
+                decimal cost = PricingService.CalculateCost("Anthropic", modelName, inputTokens, outputTokens);
 
                 // Prepare the provider result
                 var providerResult = new ProviderResult

@@ -8,11 +8,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Diagnostics;
     using System.Text;
     using ChatbotBenchmarkAPI.Business.Formatters;
+    using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
-    using ChatbotBenchmarkAPI.Models.Configurations;
+    using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -132,13 +133,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                     ?? (promptTokens + completionTokens);
 
                 // Cost calculation (adjust pricing as needed)
-                decimal cost = modelName switch
-                {
-                    "gemini-1.5-pro" => (promptTokens / 1000m * 0.00125m) + (completionTokens / 1000m * 0.005m),
-                    "gemini-2.0-flash" => (promptTokens / 1000m * 0.0001m) + (completionTokens / 1000m * 0.0004m),
-                    "gemini-2.0-pro-exp-02-05" => 0m,
-                    _ => 0m
-                };
+                decimal cost = PricingService.CalculateCost("Google", modelName, promptTokens, completionTokens);
 
                 return new ProviderResult
                 {

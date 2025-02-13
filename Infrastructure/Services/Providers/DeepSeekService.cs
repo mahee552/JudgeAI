@@ -9,11 +9,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Net.Http.Headers;
     using System.Text;
     using ChatbotBenchmarkAPI.Business.Formatters;
+    using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
-    using ChatbotBenchmarkAPI.Models.Configurations;
+    using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -121,17 +122,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int totalTokens = completionResponse.Usage?.TotalTokens ?? (promptTokens + completionTokens);
 
                 // Calculate cost based on DeepSeek's pricing (example rates)
-                decimal cost = 0m;
-                if (modelName == "deepseek-chat")
-                {
-                    // Example pricing: $0.001 per 1K prompt tokens, $0.002 per 1K completion tokens
-                    cost = (promptTokens / 1000m * 0.001m) + (completionTokens / 1000m * 0.002m);
-                }
-                else if (modelName == "deepseek-coder")
-                {
-                    // Example coding model pricing: $0.0015 per 1K prompt tokens, $0.003 per 1K completion tokens
-                    cost = (promptTokens / 1000m * 0.0015m) + (completionTokens / 1000m * 0.003m);
-                }
+                decimal cost = PricingService.CalculateCost("DeepSeek", modelName, promptTokens, completionTokens);
 
                 // Prepare the provider result
                 var providerResult = new ProviderResult
