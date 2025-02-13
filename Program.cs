@@ -37,6 +37,8 @@ builder.Services.AddTransient<QwenAIService>();
 
 builder.Services.AddTransient<GeminiService>();
 
+builder.Services.AddTransient<MistralAIService>();
+
 builder.Services.AddTransient<AIModelValidator>();
 
 builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();

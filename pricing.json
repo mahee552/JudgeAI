@@ -72,5 +72,19 @@
       "input_per_1k_tokens": 0,
       "output_per_1k_tokens": 0
     }
+  },
+  "MistralAI": {
+    "mistral-small-latest": {
+      "input_per_1k_tokens": 0,
+      "output_per_1k_tokens": 0
+    },
+    "mistral-large-lates": {
+      "input_per_1k_tokens": 0,
+      "output_per_1k_tokens": 0
+    },
+    "codestral-latest": {
+      "input_per_1k_tokens": 0,
+      "output_per_1k_tokens": 0
+    }
   }
 }

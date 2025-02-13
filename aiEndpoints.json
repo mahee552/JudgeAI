@@ -33,6 +33,12 @@
         "Endpoints": {
           "chat": "v1beta/models/"
         }
+      },
+      "MistralAI": {
+        "BaseUrl": "https://api.mistral.ai/v1",
+        "Endpoints": {
+          "generate": "/models"
+        }
       }
     }
   }
