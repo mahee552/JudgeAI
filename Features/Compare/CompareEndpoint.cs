@@ -5,6 +5,8 @@
 
 namespace ChatbotBenchmarkAPI.Features.Compare
 {
+    using ChatbotBenchmarkAPI.Business.Validation.RequestValidation;
+    using ChatbotBenchmarkAPI.CustomExceptions;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using FastEndpoints;
 
@@ -12,7 +14,7 @@ namespace ChatbotBenchmarkAPI.Features.Compare
     /// Endpoint that handles comparison requests between two AI providers, accepting a CompareRequest and returning a CompareResponse.
     /// Processes parallel calls to different AI providers and aggregates their responses.
     /// </summary>
-    public class CompareEndpoint : Endpoint<CompareRequest, CompareResponse>
+    public class CompareEndpoint : Endpoint<CompareRequest>
     {
         private readonly IAIProviderFactory _providerFactory;
 
@@ -30,6 +32,7 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         {
             Post("/compare");
             AllowAnonymous();
+            Validator<CompareRequestValidator>();
         }
 
         /// <inheritdoc/>
@@ -48,10 +51,29 @@ namespace ChatbotBenchmarkAPI.Features.Compare
 
                 await SendAsync(new CompareResponse { LeftResult = await leftTask, RightResult = await rightTask }, cancellation: ct);
             }
+            catch (ModelNotSupportedException ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                AddError(ex.Message, "Request was cancelled.");
+                ThrowIfAnyErrors(statusCode: StatusCodes.Status400BadRequest);
+            }
+            catch (HttpRequestException ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                AddError("An error occurred while communicating with the external API");
+                ThrowIfAnyErrors(statusCode: StatusCodes.Status502BadGateway);
+            }
+            catch (TaskCanceledException ex) when (ct.IsCancellationRequested)
+            {
+                Logger.LogWarning(ex, "The request was canceled by the client.");
+                AddError("The request was canceled by the client.", "Request was cancelled.");
+                ThrowIfAnyErrors(statusCode: StatusCodes.Status499ClientClosedRequest);
+            }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error while comparing models.");
-                await SendAsync(new CompareResponse(), statusCode: StatusCodes.Status500InternalServerError, cancellation: ct);
+                Logger.LogError(ex, ex.Message);
+                AddError("An unexpected error occurred.", errorCode: ex.Message);
+                ThrowIfAnyErrors(statusCode: StatusCodes.Status500InternalServerError);
             }
         }
     }

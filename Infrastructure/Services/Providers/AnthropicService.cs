@@ -123,15 +123,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int outputTokens = completionResponse.OutputTokens ?? 0;
                 int totalTokens = inputTokens + outputTokens;
 
-                // Calculate cost based on Anthropic's pricing
-                decimal cost = PricingService.CalculateCost("Anthropic", modelName, inputTokens, outputTokens);
-
                 // Prepare the provider result
                 var providerResult = new ProviderResult
                 {
                     Message = completionResponse.Content[0].Text,
                     TotalTokens = totalTokens,
-                    Cost = cost,
+                    Cost = PricingService.CalculateCost("Anthropic", modelName, inputTokens, outputTokens),
                     TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
                 };
 

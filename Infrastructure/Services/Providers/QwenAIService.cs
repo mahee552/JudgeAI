@@ -121,15 +121,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int completionTokens = completionResponse.Usage?.CompletionTokens ?? 0;
                 int totalTokens = completionResponse.Usage?.TotalTokens ?? (promptTokens + completionTokens);
 
-                // Calculate cost based on QwenAI's pricing
-                decimal cost = PricingService.CalculateCost("QwenAI", modelName, promptTokens, completionTokens);
-
                 // Prepare the provider result
                 var providerResult = new ProviderResult
                 {
                     Message = completionResponse.Choices[0].Message.Content,
                     TotalTokens = totalTokens,
-                    Cost = cost,
+                    Cost = PricingService.CalculateCost("QwenAI", modelName, promptTokens, completionTokens),
                     TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
                 };
 

@@ -132,14 +132,11 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int totalTokens = completionResponse.UsageMetadata?.TotalTokenCount
                     ?? (promptTokens + completionTokens);
 
-                // Cost calculation (adjust pricing as needed)
-                decimal cost = PricingService.CalculateCost("Google", modelName, promptTokens, completionTokens);
-
                 return new ProviderResult
                 {
                     Message = completionResponse.Candidates[0].Content.Parts[0].Text,
                     TotalTokens = totalTokens,
-                    Cost = cost,
+                    Cost = PricingService.CalculateCost("Google", modelName, promptTokens, completionTokens),
                     TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
                 };
             }

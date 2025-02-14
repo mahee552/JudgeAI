@@ -11,6 +11,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using ChatbotBenchmarkAPI.Business.Formatters;
     using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation;
+    using ChatbotBenchmarkAPI.CustomExceptions;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
@@ -26,7 +27,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     {
         private readonly IConfiguration _configuration;
         private readonly AIEndpointsConfig _endpointsConfig;
-        private readonly ILogger<OpenAIService> _logger;
         private readonly AIModelValidator _modelValidator;
 
         /// <summary>
@@ -34,13 +34,11 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// </summary>
         /// <param name="configuration">IConfiguration.</param>
         /// <param name="endpointsConfig">AIEndpointsConfig.</param>
-        /// <param name="logger">ILogger.</param>
         /// <param name="modelValidator">The model validation service.</param>
-        public OpenAIService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, ILogger<OpenAIService> logger, AIModelValidator modelValidator)
+        public OpenAIService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, AIModelValidator modelValidator)
         {
             _configuration = configuration;
             _endpointsConfig = endpointsConfig.Value;
-            _logger = logger;
             _modelValidator = modelValidator;
         }
 
@@ -61,7 +59,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 // Validate supported models
                 if (!_modelValidator.IsModelSupported("OpenAI", modelName))
                 {
-                    throw new ArgumentException($"Unsupported model: {modelName}");
+                    throw new ModelNotSupportedException($"Unsupported model: {modelName}");
                 }
 
                 // Get API key from configuration/environment
@@ -114,34 +112,16 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 int completionTokens = completionResponse.Usage?.CompletionTokens ?? 0;
                 int totalTokens = completionResponse.Usage?.TotalTokens ?? (promptTokens + completionTokens);
 
-                // Calculate cost based on dynamic pricing rules
-                decimal cost = PricingService.CalculateCost("OpenAI", modelName, promptTokens, completionTokens);
-
                 // Prepare the provider result using the first available choice
                 var providerResult = new ProviderResult
                 {
                     Message = completionResponse.Choices[0].Message.Content,
                     TotalTokens = totalTokens,
-                    Cost = cost,
+                    Cost = PricingService.CalculateCost("OpenAI", modelName, promptTokens, completionTokens),
                     TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
                 };
 
                 return providerResult;
-            }
-            catch (ArgumentException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return new ProviderResult();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                _logger.LogError(ex, "Error: config keys missing for OpenAI Service");
-                return new ProviderResult();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in OpenAI service.");
-                return new ProviderResult();
             }
             finally
             {
