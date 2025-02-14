@@ -1,46 +1,51 @@
-﻿namespace ChatbotBenchmarkAPI.Models.CompletionResponses
+﻿// Copyright (c) Happy Solutions.
+// All rights reserved.
+// This code is proprietary and confidential.
+// Unauthorized copying of this file, via any medium, is strictly prohibited.
+
+namespace ChatbotBenchmarkAPI.Models.CompletionResponses
 {
     using Newtonsoft.Json;
 
     /// <summary>
-    /// Represents the response from Mistral AI's completion API.
+    /// Represents the response from the OpenAI completion API.
     /// </summary>
     public class MistralAICompletionResponse
     {
         /// <summary>
-        /// Gets or sets the generated text from the model.
+        /// Gets or sets the unique identifier for the response.
         /// </summary>
-        [JsonProperty("generated_text")]
-        public string GeneratedText { get; set; } = string.Empty;
+        [JsonProperty("id")]
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the usage details, including token counts.
+        /// Gets or sets the type of object returned.
+        /// </summary>
+        [JsonProperty("object")]
+        public string ObjectType { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the timestamp when the response was created.
+        /// </summary>
+        [JsonProperty("created")]
+        public int Created { get; set; }
+
+        /// <summary>
+        /// Gets or sets the model used for the completion.
+        /// </summary>
+        [JsonProperty("model")]
+        public string Model { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the usage information for the request.
         /// </summary>
         [JsonProperty("usage")]
-        public Usage TotalUsage { get; set; } = new Usage();
+        public Usage Usage { get; set; } = new Usage();
 
         /// <summary>
-        /// Represents the usage details for the API call.
+        /// Gets or sets the list of choices returned by the model.
         /// </summary>
-        public class Usage
-        {
-            /// <summary>
-            /// Gets or sets the number of tokens in the input prompt.
-            /// </summary>
-            [JsonProperty("prompt_tokens")]
-            public int PromptTokens { get; set; }
-
-            /// <summary>
-            /// Gets or sets the number of tokens in the generated completion.
-            /// </summary>
-            [JsonProperty("completion_tokens")]
-            public int CompletionTokens { get; set; }
-
-            /// <summary>
-            /// Gets or sets the total number of tokens used.
-            /// </summary>
-            [JsonProperty("total_tokens")]
-            public int TotalTokens { get; set; }
-        }
+        [JsonProperty("choices")]
+        public List<Choice> Choices { get; set; } = new List<Choice>();
     }
 }

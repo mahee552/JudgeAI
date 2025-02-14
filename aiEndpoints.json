@@ -37,7 +37,7 @@
       "MistralAI": {
         "BaseUrl": "https://api.mistral.ai/v1",
         "Endpoints": {
-          "generate": "/models"
+          "generate": "/chat/completions"
         }
       }
     }

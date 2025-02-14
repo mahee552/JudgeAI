@@ -1,4 +1,9 @@
-﻿namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
+﻿// Copyright (c) Happy Solutions.
+// All rights reserved.
+// This code is proprietary and confidential.
+// Unauthorized copying of this file, via any medium, is strictly prohibited.
+
+namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 {
     using System.Diagnostics;
     using System.Net.Http.Headers;
@@ -66,11 +71,11 @@
                 var requestBody = new
                 {
                     model = modelName,
-                    inputs = prompt,
-                    parameters = new
-                    {
-                        temperature = 0.7,
-                    },
+                    messages = new[]
+                       {
+                new { role = "user", content = prompt },
+                       },
+                    temperature = 0.7,
                 };
 
                 // Serialize request body to JSON
@@ -99,15 +104,15 @@
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var completionResponse = JsonConvert.DeserializeObject<MistralAICompletionResponse>(jsonResponse) ?? new MistralAICompletionResponse();
 
-                if (completionResponse == null || string.IsNullOrEmpty(completionResponse.GeneratedText))
+                if (completionResponse == null || completionResponse.Choices == null || completionResponse.Choices.Count <= 0)
                 {
                     throw new InvalidOperationException("Failed to parse a valid response from Mistral AI API.");
                 }
 
                 // Extract token usage data (if available)
-                int promptTokens = completionResponse.TotalUsage?.PromptTokens ?? 0;
-                int completionTokens = completionResponse.TotalUsage?.CompletionTokens ?? 0;
-                int totalTokens = completionResponse.TotalUsage?.TotalTokens ?? (promptTokens + completionTokens);
+                int promptTokens = completionResponse.Usage?.PromptTokens ?? 0;
+                int completionTokens = completionResponse.Usage?.CompletionTokens ?? 0;
+                int totalTokens = completionResponse.Usage?.TotalTokens ?? (promptTokens + completionTokens);
 
                 // Calculate cost based on dynamic pricing rules
                 decimal cost = PricingService.CalculateCost("MistralAI", modelName, promptTokens, completionTokens);
@@ -115,7 +120,7 @@
                 // Prepare the provider result
                 var providerResult = new ProviderResult
                 {
-                    Message = completionResponse.GeneratedText,
+                    Message = completionResponse.Choices[0].Message.Content,
                     TotalTokens = totalTokens,
                     Cost = cost,
                     TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
