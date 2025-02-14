@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="FastEndpoints" Version="5.34.0" />
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="10.6.0.109712">
