@@ -44,6 +44,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Factory
                 "qwenai" => _serviceProvider.GetRequiredService<QwenAIService>(),
                 "google" => _serviceProvider.GetRequiredService<GeminiService>(),
                 "mistralai" => _serviceProvider.GetRequiredService<MistralAIService>(),
+                "xai" => _serviceProvider.GetRequiredService<XAiService>(),
                 _ => throw new NotSupportedException($"Provider '{providerName}' is not supported.")
             };
         }

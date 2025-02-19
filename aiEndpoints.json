@@ -39,6 +39,13 @@
         "Endpoints": {
           "generate": "/chat/completions"
         }
+      },
+      "XAI": {
+        "BaseUrl": "https://api.x.ai/v1",
+        "Endpoints": {
+          "completions": "/completions",
+          "chat": "/chat/completions"
+        }
       }
     }
   }

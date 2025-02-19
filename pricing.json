@@ -86,5 +86,15 @@
       "input_per_1k_tokens": 0,
       "output_per_1k_tokens": 0
     }
+  },
+  "XAI": {
+    "grok-2-1212": {
+      "input_per_1k_tokens": 0.002,
+      "output_per_1k_tokens": 0.01
+    },
+    "grok-2-vision-1212": {
+      "input_per_1k_tokens": 0.002,
+      "output_per_1k_tokens": 0.01
+    }
   }
 }
