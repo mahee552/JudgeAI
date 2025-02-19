@@ -3,7 +3,7 @@
 // This code is proprietary and confidential.
 // Unauthorized copying of this file, via any medium, is strictly prohibited.
 
-namespace ChatbotBenchmarkAPI.Business.Formatters
+namespace ChatbotBenchmarkAPI.Utilities.Formatters
 {
     using System;
     using System.Diagnostics;

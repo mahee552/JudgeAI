@@ -8,13 +8,13 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Diagnostics;
     using System.Net.Http.Headers;
     using System.Text;
-    using ChatbotBenchmarkAPI.Business.Formatters;
     using ChatbotBenchmarkAPI.Business.Pricing;
-    using ChatbotBenchmarkAPI.Business.Validation;
+    using ChatbotBenchmarkAPI.Business.Validation.ModelValidation;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
     using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
+    using ChatbotBenchmarkAPI.Utilities.Formatters;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 

@@ -6,7 +6,7 @@
 namespace ChatbotBenchmarkAPI.Features.Compare
 {
     using ChatbotBenchmarkAPI.Business.Validation.RequestValidation;
-    using ChatbotBenchmarkAPI.CustomExceptions;
+    using ChatbotBenchmarkAPI.Exceptions;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using FastEndpoints;
 

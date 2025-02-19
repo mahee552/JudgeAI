@@ -3,7 +3,7 @@
 // This code is proprietary and confidential.
 // Unauthorized copying of this file, via any medium, is strictly prohibited.
 
-namespace ChatbotBenchmarkAPI.CustomExceptions
+namespace ChatbotBenchmarkAPI.Exceptions
 {
     /// <summary>
     /// Exception thrown when a requested model is not supported by the system.

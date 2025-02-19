@@ -3,7 +3,7 @@
 // This code is proprietary and confidential.
 // Unauthorized copying of this file, via any medium, is strictly prohibited.
 
-namespace ChatbotBenchmarkAPI.Infrastructure.Services.Factory
+namespace ChatbotBenchmarkAPI.Infrastructure.Services.Factories
 {
     using System.Globalization;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;

@@ -3,8 +3,8 @@
 // This code is proprietary and confidential.
 // Unauthorized copying of this file, via any medium, is strictly prohibited.
 
-using ChatbotBenchmarkAPI.Business.Validation;
-using ChatbotBenchmarkAPI.Infrastructure.Services.Factory;
+using ChatbotBenchmarkAPI.Business.Validation.ModelValidation;
+using ChatbotBenchmarkAPI.Infrastructure.Services.Factories;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
 using ChatbotBenchmarkAPI.Infrastructure.Services.Providers;
 using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
