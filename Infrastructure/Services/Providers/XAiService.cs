@@ -85,8 +85,8 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
                 // Send POST request
-                string providerBaseUrl = _endpointsConfig.Providers["XAI"].BaseUrl ?? throw new KeyNotFoundException("Base URL is missing");
-                string endpoint = _endpointsConfig.Providers["XAI"].Endpoints["chat"] ?? throw new KeyNotFoundException("Chat endpoint is missing");
+                string providerBaseUrl = _endpointsConfig.Providers["XAI"].BaseUrl ?? throw new KeyNotFoundException("XAI: Base URL is missing");
+                string endpoint = _endpointsConfig.Providers["XAI"].Endpoints["chat"] ?? throw new KeyNotFoundException("XAI: Chat endpoint is missing");
 
                 stopwatch = Stopwatch.StartNew();
                 using var response = await httpClient.PostAsync($"{providerBaseUrl}{endpoint}", httpContent);

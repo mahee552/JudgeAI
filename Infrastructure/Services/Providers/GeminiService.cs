@@ -25,7 +25,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     {
         private readonly IConfiguration _configuration;
         private readonly AIEndpointsConfig _endpointsConfig;
-        private readonly ILogger<GeminiService> _logger;
         private readonly AIModelValidator _modelValidator;
 
         /// <summary>
@@ -33,17 +32,14 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// </summary>
         /// <param name="configuration">IConfiguration.</param>
         /// <param name="endpointsConfig">AIEndpointsConfig.</param>
-        /// <param name="logger">ILogger.</param>
         /// <param name="modelValidator">The model validation service.</param>
         public GeminiService(
             IConfiguration configuration,
             IOptions<AIEndpointsConfig> endpointsConfig,
-            ILogger<GeminiService> logger,
             AIModelValidator modelValidator)
         {
             _configuration = configuration;
             _endpointsConfig = endpointsConfig.Value;
-            _logger = logger;
             _modelValidator = modelValidator;
         }
 
@@ -97,7 +93,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 string baseUrl = _endpointsConfig.Providers["Google"].BaseUrl
                     ?? throw new KeyNotFoundException("Google base URL not configured");
                 string endpoint = _endpointsConfig.Providers["Google"].Endpoints["chat"]
-                    ?? throw new KeyNotFoundException("Chat endpoint not configured");
+                    ?? throw new KeyNotFoundException("Google Chat endpoint not configured");
 
                 // Send request to Gemini API
                 string requestUrl = $"{baseUrl}{endpoint}{modelName}:generateContent?key={apiKey}";
@@ -139,21 +135,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                     Cost = PricingService.CalculateCost("Google", modelName, promptTokens, completionTokens),
                     TimeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch),
                 };
-            }
-            catch (ArgumentException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return new ProviderResult();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                _logger.LogError(ex, "Error: config keys missing for Gemini Service");
-                return new ProviderResult();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in Gemini service: {Message}", ex.Message);
-                return new ProviderResult();
             }
             finally
             {

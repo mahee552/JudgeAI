@@ -30,7 +30,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     {
         private readonly IConfiguration _configuration;
         private readonly AIEndpointsConfig _endpointsConfig;
-        private readonly ILogger<AnthropicService> _logger;
         private readonly AIModelValidator _modelValidator;
 
         /// <summary>
@@ -38,13 +37,11 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// </summary>
         /// <param name="configuration">IConfiguration.</param>
         /// <param name="endpointsConfig">AIEndpointsConfig.</param>
-        /// <param name="logger">ILogger.</param>
         /// <param name="modelValidator">The model validation service.</param>
-        public AnthropicService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, ILogger<AnthropicService> logger, AIModelValidator modelValidator)
+        public AnthropicService(IConfiguration configuration, IOptions<AIEndpointsConfig> endpointsConfig, AIModelValidator modelValidator)
         {
             _configuration = configuration;
             _endpointsConfig = endpointsConfig.Value;
-            _logger = logger;
             _modelValidator = modelValidator;
         }
 
@@ -133,21 +130,6 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 };
 
                 return providerResult;
-            }
-            catch (ArgumentException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return new ProviderResult();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                _logger.LogError(ex, "Error: config keys missing for Anthropic Service");
-                return new ProviderResult();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in Anthropic service.");
-                return new ProviderResult();
             }
             finally
             {

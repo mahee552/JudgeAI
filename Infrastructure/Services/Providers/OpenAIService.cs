@@ -63,7 +63,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 }
 
                 // Get API key from configuration/environment
-                string apiKey = _configuration["APIKeys:OpenAI"] ?? throw new KeyNotFoundException("Error: API Key is missing");
+                string apiKey = _configuration["APIKeys:OpenAI"] ?? throw new KeyNotFoundException("Error: OpenAI API Key is missing");
 
                 // Prepare the request body
                 var requestBody = new
@@ -85,8 +85,8 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
                 // Send POST request
-                string providerbaseUrl = $"{_endpointsConfig.Providers["OpenAI"].BaseUrl}" ?? throw new KeyNotFoundException();
-                string endpoint = $"{_endpointsConfig.Providers["OpenAI"].Endpoints["chat"]}" ?? throw new KeyNotFoundException();
+                string providerbaseUrl = $"{_endpointsConfig.Providers["OpenAI"].BaseUrl}" ?? throw new KeyNotFoundException("OpenAI: Base url is missing");
+                string endpoint = $"{_endpointsConfig.Providers["OpenAI"].Endpoints["chat"]}" ?? throw new KeyNotFoundException("OpenAI: Endpoint config is missing");
 
                 stopwatch = Stopwatch.StartNew();
                 using var response = await httpClient.PostAsync($"{providerbaseUrl}{endpoint}", httpContent);
