@@ -10,6 +10,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using System.Text;
     using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation.ModelValidation;
+    using ChatbotBenchmarkAPI.Exceptions;
     using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
@@ -62,7 +63,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 // Validate supported models
                 if (!_modelValidator.IsModelSupported("DeepSeek", modelName))
                 {
-                    throw new ArgumentException($"Unsupported model: {modelName}");
+                    throw new ModelNotSupportedException($"Unsupported model: {modelName}");
                 }
 
                 // Get API key from configuration/environment

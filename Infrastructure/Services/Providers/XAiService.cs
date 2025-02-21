@@ -63,7 +63,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 }
 
                 // Get API key from configuration/environment
-                string apiKey = _configuration["APIKeys:XAI"] ?? throw new KeyNotFoundException("Error: API Key is missing");
+                string apiKey = _configuration["APIKeys:XAI"] ?? throw new KeyNotFoundException("Error: XAI API Key is missing");
 
                 // Prepare the request body
                 var requestBody = new
