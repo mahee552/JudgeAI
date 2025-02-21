@@ -19,7 +19,7 @@ namespace ChatbotBenchmarkAPI.Business.Validation.RequestValidation
         /// </summary>
         public CompareRequestValidator()
         {
-            RuleFor(x => x.Prompt)
+            RuleFor(x => x.Messages)
                 .NotEmpty().WithMessage("Prompt is required.");
 
             RuleFor(x => x.LeftProvider)

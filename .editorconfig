@@ -264,6 +264,12 @@ dotnet_diagnostic.SA1402.severity = none
 # SA1010: Opening square brackets should be spaced correctly
 dotnet_diagnostic.SA1010.severity = none
 
+# SA1000: Keywords should be spaced correctly
+dotnet_diagnostic.SA1000.severity = none
+
+# IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE0090.severity = none
+
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4

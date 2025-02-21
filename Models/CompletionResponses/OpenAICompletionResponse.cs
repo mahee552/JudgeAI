@@ -5,6 +5,7 @@
 
 namespace ChatbotBenchmarkAPI.Models.CompletionResponses
 {
+    using ChatbotBenchmarkAPI.Models.Request;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -95,23 +96,5 @@ namespace ChatbotBenchmarkAPI.Models.CompletionResponses
         /// </summary>
         [JsonProperty("index")]
         public int Index { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a message in the OpenAI completion response.
-    /// </summary>
-    public class Message
-    {
-        /// <summary>
-        /// Gets or sets the role of the message sender (e.g., user, assistant).
-        /// </summary>
-        [JsonProperty("role")]
-        public string Role { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the content of the message.
-        /// </summary>
-        [JsonProperty("content")]
-        public string Content { get; set; } = string.Empty;
     }
 }

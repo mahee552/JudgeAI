@@ -11,10 +11,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using ChatbotBenchmarkAPI.Business.Pricing;
     using ChatbotBenchmarkAPI.Business.Validation.ModelValidation;
     using ChatbotBenchmarkAPI.Exceptions;
-    using ChatbotBenchmarkAPI.Features.Compare;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
     using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
+    using ChatbotBenchmarkAPI.Models.Request;
+    using ChatbotBenchmarkAPI.Models.Response;
+    using ChatbotBenchmarkAPI.Utilities.Builders;
     using ChatbotBenchmarkAPI.Utilities.Formatters;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -46,11 +48,16 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         /// Calls Mistral AI's API with the specified model and prompt to generate a response.
         /// </summary>
         /// <param name="modelName">The name of the Mistral AI model to use (e.g., "mistral-7b").</param>
-        /// <param name="prompt">The input prompt to send to the model.</param>
-        /// <returns>A ProviderResult containing the model's response, token usage, calculated cost, and time taken.</returns>
-        /// <exception cref="HttpRequestException">Thrown when the API request fails.</exception>
-        /// <exception cref="ArgumentException">Thrown when the model name is invalid or unsupported.</exception>
-        public async Task<ProviderResult> CallModelAsync(string modelName, string prompt)
+        /// <param name="messages">
+        /// A list of messages representing the conversation history, including user and assistant exchanges.
+        /// </param>
+        /// <param name="chatRequestSettings">
+        /// Configuration options such as temperature and whether to remember chat history.
+        /// </param>
+        /// <returns>
+        /// A <see cref="ProviderResult"/> containing the AI-generated response, token usage, calculated cost, and execution time.
+        /// </returns>
+        public async Task<ProviderResult> CallModelAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings)
         {
             var stopwatch = new Stopwatch();
 
@@ -66,15 +73,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 string apiKey = _configuration["APIKeys:MistralAI"] ?? throw new KeyNotFoundException("Error: API Key is missing");
 
                 // Prepare the request body
-                var requestBody = new
-                {
-                    model = modelName,
-                    messages = new[]
-                       {
-                new { role = "user", content = prompt },
-                       },
-                    temperature = 0.7,
-                };
+                var requestBody = ChatRequestBuilder.BuildRequestBody(modelName, messages, chatRequestSettings);
 
                 // Serialize request body to JSON
                 var jsonRequest = JsonConvert.SerializeObject(requestBody);

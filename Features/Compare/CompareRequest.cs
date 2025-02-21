@@ -5,6 +5,8 @@
 
 namespace ChatbotBenchmarkAPI.Features.Compare
 {
+    using ChatbotBenchmarkAPI.Models.Request;
+
     /// <summary>
     /// Represents a request to compare responses between two AI providers.
     /// </summary>
@@ -13,7 +15,7 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         /// <summary>
         /// Gets or sets the common prompt or input text to be used for the AI model call.
         /// </summary>
-        public string Prompt { get; set; } = string.Empty;
+        public List<Message> Messages { get; set; } = new List<Message>();
 
         /// <summary>
         /// Gets or sets the provider selection configuration for the left side comparison.
@@ -24,6 +26,11 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         /// Gets or sets the provider selection configuration for the right side comparison.
         /// </summary>
         public ProviderSelection RightProvider { get; set; } = new ProviderSelection();
+
+        /// <summary>
+        /// Gets or sets the configuration options such as temperature, whether to remember chat history and tokens limit.
+        /// </summary>
+        public ChatRequestSettings ChatRequestSettings { get; set; } = new ChatRequestSettings();
     }
 
     /// <summary>

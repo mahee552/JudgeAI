@@ -3,26 +3,28 @@
 // This code is proprietary and confidential.
 // Unauthorized copying of this file, via any medium, is strictly prohibited.
 
-namespace ChatbotBenchmarkAPI.Features.Compare
+namespace ChatbotBenchmarkAPI.Features.Chat
 {
-    using ChatbotBenchmarkAPI.Business.Validation.RequestValidation;
     using ChatbotBenchmarkAPI.Exceptions;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
+    using ChatbotBenchmarkAPI.Models.Response;
     using FastEndpoints;
 
     /// <summary>
-    /// Endpoint that handles comparison requests between two AI providers, accepting a CompareRequest and returning a CompareResponse.
-    /// Processes parallel calls to different AI providers and aggregates their responses.
+    /// Represents an API endpoint for handling chat requests.
     /// </summary>
-    public class CompareEndpoint : Endpoint<CompareRequest, CompareResponse>
+    /// <remarks>
+    /// This endpoint processes chat messages and interacts with AI providers.
+    /// </remarks>
+    public class ChatEndpoint : Endpoint<ChatRequest, ProviderResult>
     {
         private readonly IAIProviderFactory _providerFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompareEndpoint"/> class.
+        /// Initializes a new instance of the <see cref="ChatEndpoint"/> class.
         /// </summary>
         /// <param name="providerFactory">IAIProviderFactory.</param>
-        public CompareEndpoint(IAIProviderFactory providerFactory)
+        public ChatEndpoint(IAIProviderFactory providerFactory)
         {
             _providerFactory = providerFactory;
         }
@@ -30,26 +32,22 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         /// <inheritdoc/>
         public override void Configure()
         {
-            Post("/compare");
+            Post("/chat");
             AllowAnonymous();
-            Validator<CompareRequestValidator>();
         }
 
         /// <inheritdoc/>
-        public override async Task HandleAsync(CompareRequest request, CancellationToken ct)
+        public override async Task HandleAsync(ChatRequest request, CancellationToken ct)
         {
             try
             {
                 // Resolve provider services using the factory.
-                var leftProviderService = _providerFactory.GetProviderService(request.LeftProvider.Name);
-                var rightProviderService = _providerFactory.GetProviderService(request.RightProvider.Name);
+                var providerService = _providerFactory.GetProviderService(request.Provider);
 
                 // Option 1: Run concurrently
-                var leftTask = leftProviderService.CallModelAsync(request.LeftProvider.Model, request.Messages, request.ChatRequestSettings);
-                var rightTask = rightProviderService.CallModelAsync(request.RightProvider.Model, request.Messages, request.ChatRequestSettings);
-                await Task.WhenAll(leftTask, rightTask);
+                var response = await providerService.CallModelAsync(request.Model, request.Messages, request.ChatRequestSettings);
 
-                await SendAsync(new CompareResponse { LeftResult = await leftTask, RightResult = await rightTask }, cancellation: ct);
+                await SendAsync(response, cancellation: ct);
             }
             catch (ModelNotSupportedException ex)
             {
