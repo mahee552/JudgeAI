@@ -46,6 +46,13 @@
           "completions": "/completions",
           "chat": "/chat/completions"
         }
+      },
+      "Perplexity": {
+        "BaseUrl": "https://api.perplexity.ai",
+        "Endpoints": {
+          "completions": "/completions",
+          "chat": "/chat/completions"
+        }
       }
     }
   }

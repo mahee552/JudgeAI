@@ -96,5 +96,27 @@
       "input_per_1k_tokens": 0.002,
       "output_per_1k_tokens": 0.01
     }
+  },
+  "Perplexity": {
+    "sonar-reasoning-pro": {
+      "input_per_1k_tokens": 0.002,
+      "output_per_1k_tokens": 0.008
+    },
+    "sonar-reasoning": {
+      "input_per_1k_tokens": 0.001,
+      "output_per_1k_tokens": 0.005
+    },
+    "sonar-pro": {
+      "input_per_1k_tokens": 0.003,
+      "output_per_1k_tokens": 0.015
+    },
+    "sonar": {
+      "input_per_1k_tokens": 0.001,
+      "output_per_1k_tokens": 0.001
+    },
+    "r1-1776": {
+      "input_per_1k_tokens": 0.002,
+      "output_per_1k_tokens": 0.008
+    }
   }
 }

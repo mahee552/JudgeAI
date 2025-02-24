@@ -41,6 +41,8 @@ builder.Services.AddTransient<MistralAIService>();
 
 builder.Services.AddTransient<XAiService>();
 
+builder.Services.AddTransient<PerplexityService>();
+
 builder.Services.AddTransient<AIModelValidator>();
 
 builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();

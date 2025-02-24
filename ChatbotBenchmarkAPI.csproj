@@ -44,4 +44,6 @@
     <None Include="C:\Users\mahender.j\ChatbotBenchmarkAPI\ChatbotBenchmarkAPI\.editorconfig" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties pricing_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>
