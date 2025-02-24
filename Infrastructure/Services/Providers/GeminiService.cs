@@ -14,7 +14,9 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using ChatbotBenchmarkAPI.Models.CompletionResponses;
     using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
     using ChatbotBenchmarkAPI.Models.Request;
+    using ChatbotBenchmarkAPI.Models.Request.Gemini;
     using ChatbotBenchmarkAPI.Models.Response;
+    using ChatbotBenchmarkAPI.Utilities.Builders;
     using ChatbotBenchmarkAPI.Utilities.Formatters;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -75,19 +77,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                     ?? throw new KeyNotFoundException("Error: Google API key is missing");
 
                 // Build Gemini API request
-                var requestBody = new
-                {
-                    contents = new[]
-                    {
-                    new
-                    {
-                        parts = new[]
-                        {
-                            new { text = messages.LastOrDefault()?.Content },
-                        },
-                    },
-                    },
-                };
+                GeminiRequest requestBody = ChatRequestBuilder.BuildGeminiRequestBody(messages, chatRequestSettings);
 
                 // Serialize request
                 string jsonRequest = JsonConvert.SerializeObject(requestBody);

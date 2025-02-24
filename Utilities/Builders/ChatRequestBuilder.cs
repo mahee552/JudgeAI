@@ -6,6 +6,7 @@
 namespace ChatbotBenchmarkAPI.Utilities.Builders
 {
     using ChatbotBenchmarkAPI.Models.Request;
+    using ChatbotBenchmarkAPI.Models.Request.Gemini;
 
     /// <summary>
     /// Responsible for building the request body for AI model API calls.
@@ -44,6 +45,61 @@ namespace ChatbotBenchmarkAPI.Utilities.Builders
                 MaxTokens = chatRequestSettings.MaxTokens,
                 Messages = messages,
                 Temperature = chatRequestSettings.Temperature,
+            };
+        }
+
+        /// <summary>
+        /// Builds the request body for the Gemini AI model based on chat settings.
+        /// </summary>
+        /// <param name="messages">The conversation history messages.</param>
+        /// <param name="chatRequestSettings">The chat request settings (temperature, max tokens, etc.).</param>
+        /// <returns>A <see cref="GeminiRequest"/> instance representing the request body.</returns>
+        public static GeminiRequest BuildGeminiRequestBody(List<Message> messages, ChatRequestSettings chatRequestSettings)
+        {
+            if (!chatRequestSettings.RememberHistory)
+            {
+                Message message = new Message
+                {
+                    Role = "user",
+                    Content = messages.LastOrDefault()?.Content ?? string.Empty,
+                };
+
+                return new GeminiRequest
+                {
+                    GenerationConfig = new GenerationConfig()
+                    {
+                        Temperature = chatRequestSettings.Temperature,
+                        MaxOutputTokens = chatRequestSettings.MaxTokens,
+                    },
+
+                    Contents = new List<GeminiContent>
+            {
+                new GeminiContent
+                {
+                    Parts = new List<GeminiPart>
+                    {
+                        new GeminiPart { Text = message.Content },
+                    },
+                },
+            },
+                };
+            }
+
+            return new GeminiRequest
+            {
+                GenerationConfig = new GenerationConfig()
+                {
+                    Temperature = chatRequestSettings.Temperature,
+                    MaxOutputTokens = chatRequestSettings.MaxTokens,
+                },
+
+                Contents = new List<GeminiContent>
+        {
+            new GeminiContent
+            {
+                Parts = messages.Select(m => new GeminiPart { Text = m.Content }).ToList(),
+            },
+        },
             };
         }
     }
