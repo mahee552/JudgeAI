@@ -5,6 +5,7 @@
 
 namespace ChatbotBenchmarkAPI.Features.Chat
 {
+    using ChatbotBenchmarkAPI.Business.Validation.RequestValidation;
     using ChatbotBenchmarkAPI.Exceptions;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
     using ChatbotBenchmarkAPI.Models.Response;
@@ -34,6 +35,7 @@ namespace ChatbotBenchmarkAPI.Features.Chat
         {
             Post("/chat");
             AllowAnonymous();
+            Validator<ChatRequestValidator>();
         }
 
         /// <inheritdoc/>

@@ -20,7 +20,12 @@ namespace ChatbotBenchmarkAPI.Business.Validation.RequestValidation
         public CompareRequestValidator()
         {
             RuleFor(x => x.Messages)
-                .NotEmpty().WithMessage("Prompt is required.");
+                .NotEmpty().WithMessage("Prompt is required.")
+                .Must(messages => messages.Count > 0).WithMessage("At least one message is required.")
+                .ForEach(messageRule =>
+                {
+                    messageRule.SetValidator(new MessageValidator());
+                });
 
             RuleFor(x => x.LeftProvider)
                 .NotNull().WithMessage("Left provider is required.");
@@ -40,6 +45,9 @@ namespace ChatbotBenchmarkAPI.Business.Validation.RequestValidation
             RuleFor(x => x.RightProvider.Model)
                 .NotEmpty().WithMessage("Right provider model is required.")
                 .NotEqual(x => x.LeftProvider.Model).WithMessage("Left and right models must be different.");
+
+            RuleFor(x => x.ChatRequestSettings)
+                .SetValidator(new ChatRequestSettingsValidator());
         }
     }
 }
