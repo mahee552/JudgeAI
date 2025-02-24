@@ -1,4 +1,9 @@
-﻿namespace ChatbotBenchmarkAPI.Models.Response
+﻿// Copyright (c) Happy Solutions.
+// All rights reserved.
+// This code is proprietary and confidential.
+// Unauthorized copying of this file, via any medium, is strictly prohibited.
+
+namespace ChatbotBenchmarkAPI.Models.Response
 {
     /// <summary>
     /// Represents the detailed result of an AI provider's response including performance metrics.

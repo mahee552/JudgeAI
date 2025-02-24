@@ -78,7 +78,7 @@
       "input_per_1k_tokens": 0,
       "output_per_1k_tokens": 0
     },
-    "mistral-large-lates": {
+    "mistral-large-latest": {
       "input_per_1k_tokens": 0,
       "output_per_1k_tokens": 0
     },

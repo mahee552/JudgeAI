@@ -73,7 +73,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 string apiKey = _configuration["APIKeys:QwenAI"] ?? throw new KeyNotFoundException("Error: QwenAI API Key is missing");
 
                 // Prepare the request body
-                var requestBody = ChatRequestBuilder.BuildRequestBody(modelName, messages, chatRequestSettings);
+                ProviderRequest requestBody = ChatRequestBuilder.BuildRequestBody(modelName, messages, chatRequestSettings);
 
                 // Serialize request body to JSON
                 var jsonRequest = JsonConvert.SerializeObject(requestBody);

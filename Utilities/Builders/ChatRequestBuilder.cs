@@ -1,4 +1,9 @@
-﻿namespace ChatbotBenchmarkAPI.Utilities.Builders
+﻿// Copyright (c) Happy Solutions.
+// All rights reserved.
+// This code is proprietary and confidential.
+// Unauthorized copying of this file, via any medium, is strictly prohibited.
+
+namespace ChatbotBenchmarkAPI.Utilities.Builders
 {
     using ChatbotBenchmarkAPI.Models.Request;
 
@@ -14,7 +19,7 @@
         /// <param name="messages">The conversation history messages.</param>
         /// <param name="chatRequestSettings">The chat request settings (temperature, max tokens, etc.).</param>
         /// <returns>An object representing the request body.</returns>
-        public static object BuildRequestBody(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings)
+        public static ProviderRequest BuildRequestBody(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings)
         {
             if (!chatRequestSettings.RememberHistory)
             {
@@ -24,21 +29,21 @@
                     Content = messages.LastOrDefault()?.Content ?? string.Empty,
                 };
 
-                return new
+                return new ProviderRequest
                 {
-                    model = modelName,
-                    max_tokens = chatRequestSettings.MaxTokens,
-                    messages = new List<Message> { message },
-                    temperature = chatRequestSettings.Temperature,
+                    Model = modelName,
+                    MaxTokens = chatRequestSettings.MaxTokens,
+                    Messages = new List<Message> { message },
+                    Temperature = chatRequestSettings.Temperature,
                 };
             }
 
-            return new
+            return new ProviderRequest
             {
-                model = modelName,
-                max_tokens = chatRequestSettings.MaxTokens,
-                messages,
-                temperature = chatRequestSettings.Temperature,
+                Model = modelName,
+                MaxTokens = chatRequestSettings.MaxTokens,
+                Messages = messages,
+                Temperature = chatRequestSettings.Temperature,
             };
         }
     }
