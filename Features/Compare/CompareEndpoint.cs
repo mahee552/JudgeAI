@@ -44,7 +44,11 @@ namespace ChatbotBenchmarkAPI.Features.Compare
                 var leftProviderService = _providerFactory.GetProviderService(request.LeftProvider.Name);
                 var rightProviderService = _providerFactory.GetProviderService(request.RightProvider.Name);
 
-                // Option 1: Run concurrently
+                if (request.ChatRequestSettings.RememberHistory)
+                {
+                    request.Messages = request.Messages.Count > 5 ? request.Messages.TakeLast(5).ToList() : request.Messages;
+                }
+
                 var leftTask = leftProviderService.CallModelAsync(request.LeftProvider.Model, request.Messages, request.ChatRequestSettings);
                 var rightTask = rightProviderService.CallModelAsync(request.RightProvider.Model, request.Messages, request.ChatRequestSettings);
                 await Task.WhenAll(leftTask, rightTask);

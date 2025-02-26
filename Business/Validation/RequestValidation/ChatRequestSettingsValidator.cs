@@ -23,9 +23,6 @@
         {
             RuleFor(x => x.Temperature)
                 .InclusiveBetween(0, 1).WithMessage("Temperature must be between 0 and 1.");
-
-            RuleFor(x => x.MaxTokens)
-                .GreaterThan(0).WithMessage("MaxTokens must be greater than 0.");
         }
     }
 }

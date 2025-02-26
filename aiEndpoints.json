@@ -17,7 +17,7 @@
       "Anthropic": {
         "BaseUrl": "https://api.anthropic.com",
         "Endpoints": {
-          "messages": "/v1/messages",
+          "chat": "/v1/messages",
           "completions": "/v1/complete"
         }
       },
@@ -37,7 +37,7 @@
       "MistralAI": {
         "BaseUrl": "https://api.mistral.ai/v1",
         "Endpoints": {
-          "generate": "/chat/completions"
+          "chat": "/chat/completions"
         }
       },
       "XAI": {

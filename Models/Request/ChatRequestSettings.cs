@@ -41,5 +41,26 @@ namespace ChatbotBenchmarkAPI.Models.Request
         /// </remarks>
         [JsonProperty("max_tokens")]
         public int MaxTokens { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the response should be streamed.
+        /// </summary>
+        /// <remarks>
+        /// When set to <c>true</c>, the API will send the response in chunks as the data is generated,
+        /// allowing for real-time processing and display. This is particularly useful for applications
+        /// requiring low latency, such as chatbots or interactive text generation.
+        /// When set to <c>false</c>, the API will wait until the entire response is generated before
+        /// sending it back to the client.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var request = new ApiRequest
+        /// {
+        ///     Stream = true // Enable streaming for real-time responses
+        /// };
+        /// </code>
+        /// </example>
+        [JsonProperty("stream")]
+        public bool Stream { get; set; } = false;
     }
 }

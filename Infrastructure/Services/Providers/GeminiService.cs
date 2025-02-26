@@ -138,5 +138,11 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 stopwatch.Stop();
             }
         }
+
+        /// <inheritdoc/>
+        public Task StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

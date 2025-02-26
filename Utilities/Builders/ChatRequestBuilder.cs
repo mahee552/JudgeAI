@@ -33,18 +33,20 @@ namespace ChatbotBenchmarkAPI.Utilities.Builders
                 return new ProviderRequest
                 {
                     Model = modelName,
-                    MaxTokens = chatRequestSettings.MaxTokens,
                     Messages = new List<Message> { message },
                     Temperature = chatRequestSettings.Temperature,
+                    Stream = chatRequestSettings.Stream,
+                    MaxTokens = chatRequestSettings.MaxTokens,
                 };
             }
 
             return new ProviderRequest
             {
                 Model = modelName,
-                MaxTokens = chatRequestSettings.MaxTokens,
                 Messages = messages,
                 Temperature = chatRequestSettings.Temperature,
+                Stream = chatRequestSettings.Stream,
+                MaxTokens = chatRequestSettings.MaxTokens,
             };
         }
 

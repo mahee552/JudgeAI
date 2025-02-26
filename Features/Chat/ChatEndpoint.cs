@@ -43,13 +43,23 @@ namespace ChatbotBenchmarkAPI.Features.Chat
         {
             try
             {
-                // Resolve provider services using the factory.
                 var providerService = _providerFactory.GetProviderService(request.Provider);
 
-                // Option 1: Run concurrently
-                var response = await providerService.CallModelAsync(request.Model, request.Messages, request.ChatRequestSettings);
+                if (request.ChatRequestSettings.RememberHistory)
+                {
+                    request.Messages = request.Messages.Count > 5 ? request.Messages.TakeLast(5).ToList() : request.Messages;
+                }
 
-                await SendAsync(response, cancellation: ct);
+                if (!request.ChatRequestSettings.Stream)
+                {
+                    var response = await providerService.CallModelAsync(request.Model, request.Messages, request.ChatRequestSettings);
+                    await SendAsync(response, cancellation: ct);
+                }
+                else
+                {
+                    HttpResponse httpResponse = HttpContext.Response;
+                    await providerService.StreamModelResponseAsync(request.Model, request.Messages, request.ChatRequestSettings, httpResponse);
+                }
             }
             catch (ModelNotSupportedException ex)
             {
