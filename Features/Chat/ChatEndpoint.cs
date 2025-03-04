@@ -33,7 +33,7 @@ namespace ChatbotBenchmarkAPI.Features.Chat
         /// <inheritdoc/>
         public override void Configure()
         {
-            Post("/chat");
+            Post("/api/chat");
             AllowAnonymous();
             Validator<ChatRequestValidator>();
         }
