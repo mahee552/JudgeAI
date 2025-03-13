@@ -11,7 +11,7 @@ namespace ChatbotBenchmarkAPI.Models.CompletionResponses
     /// <summary>
     /// Represents the response from the OpenAI completion API.
     /// </summary>
-    public class OpenAICompletionResponse
+    public class AICompletionResponse
     {
         /// <summary>
         /// Gets or sets the unique identifier for the response.

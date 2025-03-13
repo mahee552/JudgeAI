@@ -80,7 +80,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 }
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                var completionResponse = JsonConvert.DeserializeObject<OpenAICompletionResponse>(jsonResponse) ?? new();
+                var completionResponse = JsonConvert.DeserializeObject<AICompletionResponse>(jsonResponse) ?? new();
 
                 if (completionResponse.Choices == null || completionResponse.Choices.Count == 0)
                 {
