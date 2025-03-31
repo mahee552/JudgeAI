@@ -67,7 +67,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         protected abstract string ProviderName { get; }
 
         /// <inheritdoc/>
-        public async Task<ProviderResult> CallModelAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings)
+        public virtual async Task<ProviderResult> CallModelAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         }
 
         /// <inheritdoc/>
-        public async Task StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
+        public virtual async Task StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
         {
             try
             {
