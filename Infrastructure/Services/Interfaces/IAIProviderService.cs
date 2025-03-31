@@ -31,7 +31,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces
         /// <param name="messages">A list of <see cref="Message"/> objects representing the conversation history to be used as input for the model.</param>
         /// <param name="chatRequestSettings">Settings for the chat request, such as temperature, max tokens, etc., which influence the AI model's response generation.</param>
         /// <param name="response">The <see cref="HttpResponse"/> object to stream the AI model's response to.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response);
+        /// <returns>A <see cref="Task{ProviderResult}"/> representing the asynchronous operation.</returns>
+        Task<ProviderResult> StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response);
     }
 }

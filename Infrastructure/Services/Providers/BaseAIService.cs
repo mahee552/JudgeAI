@@ -18,6 +18,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using ChatbotBenchmarkAPI.Models.Response;
     using ChatbotBenchmarkAPI.Utilities.Builders;
     using ChatbotBenchmarkAPI.Utilities.Formatters;
+    using ChatbotBenchmarkAPI.Utilities.Tokenizers;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -106,8 +107,12 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         }
 
         /// <inheritdoc/>
-        public virtual async Task StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
+        public virtual async Task<ProviderResult> StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
         {
+            int promptTokens = 0;
+            int completionTokens = 0;
+            var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 using var httpResponse = await SendRequestAsync(modelName, messages, chatRequestSettings, HttpCompletionOption.ResponseHeadersRead);
@@ -149,14 +154,41 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                             var delta = parsedData?.choices[0].delta;
                             if (delta?.content != null)
                             {
-                                var formattedResponse = JsonConvert.SerializeObject(new { v = Convert.ToString(delta.content) });
+                                var content = Convert.ToString(delta.content);
+                                var formattedResponse = JsonConvert.SerializeObject(new { v = content });
 
                                 await response.WriteAsync($"data: {formattedResponse}\n\n");
                                 await response.Body.FlushAsync();
+
+                                // Track completion tokens
+                                completionTokens += BasicTokenizer.Tokenize(content).Count;
                             }
+                        }
+
+                        // Track prompt tokens if available
+                        if (parsedData?.usage?.prompt_tokens != null)
+                        {
+                            promptTokens = parsedData.usage.prompt_tokens;
                         }
                     }
                 }
+
+                int totalTokens = promptTokens + completionTokens;
+                var cost = PricingService.CalculateCost(ProviderName, modelName, promptTokens, completionTokens);
+                var timeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch);
+
+                ProviderResult providerResponse = new ProviderResult
+                {
+                    Message = "Stream completed successfully.",
+                    TotalTokens = totalTokens,
+                    Cost = cost,
+                    TimeTaken = timeTaken,
+                };
+
+                await response.WriteAsync($"data: {JsonConvert.SerializeObject(providerResponse)}\n\n");
+                await response.Body.FlushAsync();
+
+                return providerResponse;
             }
             catch (Exception ex)
             {
@@ -164,6 +196,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                 await response.WriteAsync($"data: {errorResponse}\n\n");
                 await response.Body.FlushAsync();
                 throw;
+            }
+            finally
+            {
+                stopwatch.Stop();
             }
         }
 

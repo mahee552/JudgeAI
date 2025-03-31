@@ -17,6 +17,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
     using ChatbotBenchmarkAPI.Models.Response;
     using ChatbotBenchmarkAPI.Utilities.Builders;
     using ChatbotBenchmarkAPI.Utilities.Formatters;
+    using ChatbotBenchmarkAPI.Utilities.Tokenizers;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
@@ -129,9 +130,11 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         }
 
         /// <inheritdoc/>
-        public override async Task StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
+        public override async Task<ProviderResult> StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
         {
             var stopwatch = new Stopwatch();
+            int promptTokens = 0;
+            int completionTokens = 0;
 
             try
             {
@@ -187,6 +190,9 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 
                     await response.WriteAsync($"data: {chunk}\n\n");
                     await response.Body.FlushAsync();
+
+                    // Track completion tokens using the tokenizer
+                    completionTokens += BasicTokenizer.Tokenize(chunk).Count;
                 }
             }
             catch (Exception ex)
@@ -200,6 +206,23 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
             {
                 stopwatch.Stop();
             }
+
+            int totalTokens = promptTokens + completionTokens;
+            var cost = PricingService.CalculateCost(ProviderName, modelName, promptTokens, completionTokens);
+            var timeTaken = ElapsedTimeFormatter.FormatElapsedTime(stopwatch);
+
+            ProviderResult providerResponse = new ProviderResult
+            {
+                Message = "Stream completed successfully.",
+                TotalTokens = totalTokens,
+                Cost = cost,
+                TimeTaken = timeTaken,
+            };
+
+            await response.WriteAsync($"data: {JsonConvert.SerializeObject(providerResponse)}\n\n");
+            await response.Body.FlushAsync();
+
+            return providerResponse;
         }
 
         /// <inheritdoc/>
