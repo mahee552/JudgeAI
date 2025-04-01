@@ -49,6 +49,22 @@ namespace ChatbotBenchmarkAPI.Features.Compare
                     request.Messages = request.Messages.Count > 5 ? request.Messages.TakeLast(5).ToList() : request.Messages;
                 }
 
+                if (request.ChatRequestSettings.Stream)
+                {
+                    HttpResponse response = HttpContext.Response;
+                    response.ContentType = "application/json";
+                    response.Headers.CacheControl = "no-cache";
+                    response.Headers.Connection = "keep-alive";
+
+                    // Stream left provider response
+                    await leftProviderService.StreamModelResponseAsync(request.LeftProvider.Model, request.Messages, request.ChatRequestSettings, response);
+
+                    // Stream right provider response
+                    await rightProviderService.StreamModelResponseAsync(request.RightProvider.Model, request.Messages, request.ChatRequestSettings, response);
+
+                    return;
+                }
+
                 var leftTask = leftProviderService.CallModelAsync(request.LeftProvider.Model, request.Messages, request.ChatRequestSettings);
                 var rightTask = rightProviderService.CallModelAsync(request.RightProvider.Model, request.Messages, request.ChatRequestSettings);
                 await Task.WhenAll(leftTask, rightTask);

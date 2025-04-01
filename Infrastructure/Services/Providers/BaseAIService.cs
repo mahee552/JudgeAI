@@ -107,7 +107,11 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
         }
 
         /// <inheritdoc/>
-        public virtual async Task<ProviderResult> StreamModelResponseAsync(string modelName, List<Message> messages, ChatRequestSettings chatRequestSettings, HttpResponse response)
+        public virtual async Task<ProviderResult> StreamModelResponseAsync(
+            string modelName,
+            List<Message> messages,
+            ChatRequestSettings chatRequestSettings,
+            HttpResponse response)
         {
             int promptTokens = 0;
             int completionTokens = 0;
@@ -123,9 +127,13 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                     throw new HttpRequestException($"{ProviderName} API request failed: {errorContent}");
                 }
 
-                response.ContentType = "text/event-stream";
-                response.Headers.CacheControl = "no-cache";
-                response.Headers.Connection = "keep-alive";
+                // Ensure headers are set before writing data
+                if (!response.HasStarted)
+                {
+                    response.ContentType = "text/event-stream";
+                    response.Headers.CacheControl = "no-cache";
+                    response.Headers.Connection = "keep-alive";
+                }
 
                 await using var responseStream = await httpResponse.Content.ReadAsStreamAsync();
                 using var reader = new StreamReader(responseStream);
@@ -160,12 +168,10 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
                                 await response.WriteAsync($"data: {formattedResponse}\n\n");
                                 await response.Body.FlushAsync();
 
-                                // Track completion tokens
                                 completionTokens += BasicTokenizer.Tokenize(content).Count;
                             }
                         }
 
-                        // Track prompt tokens if available
                         if (parsedData?.usage?.prompt_tokens != null)
                         {
                             promptTokens = parsedData.usage.prompt_tokens;
