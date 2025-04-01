@@ -58,13 +58,13 @@ namespace ChatbotBenchmarkAPI.Models.Request.Gemini
         /// Gets or sets the randomness of the output. Higher values make the output more random, lower values make it more deterministic.
         /// Typical values are between 0.0 and 1.0.
         /// </summary>
-        [JsonProperty("temperature")] // Add the attribute to control the casing
+        [JsonProperty("temperature", DefaultValueHandling = DefaultValueHandling.Ignore)] // Add the attribute to control the casing
         public double Temperature { get; set; } = 0.5;
 
         /// <summary>
         /// Gets or sets the length of the generated response in tokens.
         /// </summary>
-        [JsonProperty("maxOutputTokens")] // Add the attribute to control the casing
+        [JsonProperty("maxOutputTokens", DefaultValueHandling = DefaultValueHandling.Ignore)] // Add the attribute to control the casing
         public int MaxOutputTokens { get; set; } = 200;
     }
 }

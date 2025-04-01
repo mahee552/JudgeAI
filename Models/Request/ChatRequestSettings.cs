@@ -19,7 +19,7 @@ namespace ChatbotBenchmarkAPI.Models.Request
         /// A higher value (e.g., 1.0) makes responses more random,
         /// while a lower value (e.g., 0.2) makes them more deterministic.
         /// </remarks>
-        [JsonProperty("temperature")]
+        [JsonProperty("temperature", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public double Temperature { get; set; }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace ChatbotBenchmarkAPI.Models.Request
         /// If set to <c>true</c>, previous messages are considered in the response.
         /// If <c>false</c>, each request is processed independently.
         /// </remarks>
-        [JsonProperty("rememberHistory")]
+        [JsonProperty("rememberHistory", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool RememberHistory { get; set; }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace ChatbotBenchmarkAPI.Models.Request
         /// Tokens include words, punctuation, and spaces. Setting a higher value allows longer responses,
         /// but may increase cost and processing time.
         /// </remarks>
-        [JsonProperty("max_tokens")]
+        [JsonProperty("max_tokens", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public int MaxTokens { get; set; }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace ChatbotBenchmarkAPI.Models.Request
         /// };
         /// </code>
         /// </example>
-        [JsonProperty("stream")]
+        [JsonProperty("stream", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Stream { get; set; } = false;
     }
 }
