@@ -10,19 +10,19 @@ namespace ChatbotBenchmarkAPI.Business.Validation.RequestValidation
     using FluentValidation;
 
     /// <summary>
-    /// Validator class for <see cref="ChatRequest"/>.
-    /// This class uses FluentValidation to enforce rules and constraints on the properties of a <see cref="ChatRequest"/> object.
+    /// Validator class for <see cref="ChatEndpoint.Request"/>.
+    /// This class uses FluentValidation to enforce rules and constraints on the properties of a <see cref="ChatEndpoint.Request"/> object.
     /// </summary>
     /// <remarks>
     /// The validator ensures that:
     /// <list type="bullet">
-    ///     <item><description>The <see cref="ChatRequest.Provider"/> is not empty and does not exceed 50 characters.</description></item>
-    ///     <item><description>The <see cref="ChatRequest.Model"/> is not empty and does not exceed 50 characters.</description></item>
-    ///     <item><description>The <see cref="ChatRequest.Messages"/> list is not empty and contains at least one valid <see cref="Message"/>.</description></item>
-    ///     <item><description>The <see cref="ChatRequest.ChatRequestSettings"/> contains valid configuration options.</description></item>
+    ///     <item><description>The <see cref="ChatEndpoint.Request"/> is not empty and does not exceed 50 characters.</description></item>
+    ///     <item><description>The <see cref="ChatEndpoint.Request"/> is not empty and does not exceed 50 characters.</description></item>
+    ///     <item><description>The <see cref="ChatEndpoint.Request"/> list is not empty and contains at least one valid <see cref="Message"/>.</description></item>
+    ///     <item><description>The <see cref="ChatEndpoint.Request.ChatRequestSettings"/> contains valid configuration options.</description></item>
     /// </list>
     /// </remarks>
-    public class ChatRequestValidator : AbstractValidator<ChatRequest>
+    public class ChatRequestValidator : AbstractValidator<ChatEndpoint.Request>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatRequestValidator"/> class.

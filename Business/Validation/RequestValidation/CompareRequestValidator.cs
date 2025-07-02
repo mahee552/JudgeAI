@@ -9,10 +9,10 @@ namespace ChatbotBenchmarkAPI.Business.Validation.RequestValidation
     using FluentValidation;
 
     /// <summary>
-    /// Validator for the <see cref="CompareRequest"/> model.
+    /// Validator for the <see cref="CompareEndpoint.Request"/> model.
     /// Ensures that the required properties are valid before processing the request.
     /// </summary>
-    public class CompareRequestValidator : AbstractValidator<CompareRequest>
+    public class CompareRequestValidator : AbstractValidator<CompareEndpoint.Request>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CompareRequestValidator"/> class.

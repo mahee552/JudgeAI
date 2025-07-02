@@ -8,8 +8,10 @@ namespace ChatbotBenchmarkAPI.Features.Chat
     using ChatbotBenchmarkAPI.Business.Validation.RequestValidation;
     using ChatbotBenchmarkAPI.Exceptions;
     using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
+    using ChatbotBenchmarkAPI.Models.Request;
     using ChatbotBenchmarkAPI.Models.Response;
     using FastEndpoints;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Represents an API endpoint for handling chat requests.
@@ -17,7 +19,7 @@ namespace ChatbotBenchmarkAPI.Features.Chat
     /// <remarks>
     /// This endpoint processes chat messages and interacts with AI providers.
     /// </remarks>
-    public class ChatEndpoint : Endpoint<ChatRequest, ProviderResult>
+    public class ChatEndpoint : Endpoint<ChatEndpoint.Request, ProviderResult>
     {
         private readonly IAIProviderFactory _providerFactory;
 
@@ -39,7 +41,7 @@ namespace ChatbotBenchmarkAPI.Features.Chat
         }
 
         /// <inheritdoc/>
-        public override async Task HandleAsync(ChatRequest req, CancellationToken ct)
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             try
             {
@@ -85,6 +87,36 @@ namespace ChatbotBenchmarkAPI.Features.Chat
                 AddError("An unexpected error occurred.", errorCode: ex.Message);
                 ThrowIfAnyErrors(statusCode: StatusCodes.Status500InternalServerError);
             }
+        }
+
+        /// <summary>
+        /// Represents a chat request sent to an AI provider.
+        /// </summary>
+        public class Request
+        {
+            /// <summary>
+            /// Gets or sets the AI provider name (e.g., OpenAI, DeepSeek).
+            /// </summary>
+            [JsonProperty("provider")]
+            public string Provider { get; set; } = string.Empty;
+
+            /// <summary>
+            /// Gets or sets the AI model to be used (e.g., GPT-4, DeepSeek R1).
+            /// </summary>
+            [JsonProperty("model")]
+            public string Model { get; set; } = string.Empty;
+
+            /// <summary>
+            /// Gets or sets the list of messages exchanged in the conversation.
+            /// </summary>
+            [JsonProperty("messages")]
+            public List<Message> Messages { get; set; } = new List<Message>();
+
+            /// <summary>
+            /// Gets or sets the configuration options such as temperature, whether to remember chat history and tokens limit.
+            /// </summary>
+            [JsonProperty("chatRequestSettings")]
+            public ChatRequestSettings ChatRequestSettings { get; set; } = new ChatRequestSettings();
         }
     }
 }
