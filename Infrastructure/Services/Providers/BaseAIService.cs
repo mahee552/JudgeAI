@@ -85,7 +85,7 @@ namespace ChatbotBenchmarkAPI.Infrastructure.Services.Providers
 
                 if (completionResponse.Choices == null || completionResponse.Choices.Count == 0)
                 {
-                    throw new InvalidOperationException("Failed to parse a valid response from API.");
+                    throw new InvalidOperationException("Failed to parse a valid response from API. (Deserialization error)");
                 }
 
                 int promptTokens = completionResponse.Usage?.PromptTokens ?? 0;
