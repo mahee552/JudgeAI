@@ -41,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".github\workflows\github-ci-cd.yml" />
     <None Include="C:\Users\mahender.j\ChatbotBenchmarkAPI\ChatbotBenchmarkAPI\.editorconfig" />
   </ItemGroup>
 
