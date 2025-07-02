@@ -39,26 +39,26 @@ namespace ChatbotBenchmarkAPI.Features.Chat
         }
 
         /// <inheritdoc/>
-        public override async Task HandleAsync(ChatRequest request, CancellationToken ct)
+        public override async Task HandleAsync(ChatRequest req, CancellationToken ct)
         {
             try
             {
-                var providerService = _providerFactory.GetProviderService(request.Provider);
+                var providerService = _providerFactory.GetProviderService(req.Provider);
 
-                if (request.ChatRequestSettings.RememberHistory)
+                if (req.ChatRequestSettings.RememberHistory)
                 {
-                    request.Messages = request.Messages.Count > 5 ? request.Messages.TakeLast(5).ToList() : request.Messages;
+                    req.Messages = req.Messages.Count > 5 ? req.Messages.TakeLast(5).ToList() : req.Messages;
                 }
 
-                if (!request.ChatRequestSettings.Stream)
+                if (!req.ChatRequestSettings.Stream)
                 {
-                    var response = await providerService.CallModelAsync(request.Model, request.Messages, request.ChatRequestSettings);
+                    var response = await providerService.CallModelAsync(req.Model, req.Messages, req.ChatRequestSettings);
                     await SendAsync(response, cancellation: ct);
                 }
                 else
                 {
                     HttpResponse httpResponse = HttpContext.Response;
-                    await providerService.StreamModelResponseAsync(request.Model, request.Messages, request.ChatRequestSettings, httpResponse);
+                    await providerService.StreamModelResponseAsync(req.Model, req.Messages, req.ChatRequestSettings, httpResponse);
                 }
             }
             catch (ModelNotSupportedException ex)

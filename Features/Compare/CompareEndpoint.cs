@@ -36,20 +36,20 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         }
 
         /// <inheritdoc/>
-        public override async Task HandleAsync(CompareRequest request, CancellationToken ct)
+        public override async Task HandleAsync(CompareRequest req, CancellationToken ct)
         {
             try
             {
                 // Resolve provider services using the factory.
-                var leftProviderService = _providerFactory.GetProviderService(request.LeftProvider.Name);
-                var rightProviderService = _providerFactory.GetProviderService(request.RightProvider.Name);
+                var leftProviderService = _providerFactory.GetProviderService(req.LeftProvider.Name);
+                var rightProviderService = _providerFactory.GetProviderService(req.RightProvider.Name);
 
-                if (request.ChatRequestSettings.RememberHistory)
+                if (req.ChatRequestSettings.RememberHistory)
                 {
-                    request.Messages = request.Messages.Count > 5 ? request.Messages.TakeLast(5).ToList() : request.Messages;
+                    req.Messages = req.Messages.Count > 5 ? req.Messages.TakeLast(5).ToList() : req.Messages;
                 }
 
-                if (request.ChatRequestSettings.Stream)
+                if (req.ChatRequestSettings.Stream)
                 {
                     HttpResponse response = HttpContext.Response;
                     response.ContentType = "application/json";
@@ -57,16 +57,16 @@ namespace ChatbotBenchmarkAPI.Features.Compare
                     response.Headers.Connection = "keep-alive";
 
                     // Stream left provider response
-                    await leftProviderService.StreamModelResponseAsync(request.LeftProvider.Model, request.Messages, request.ChatRequestSettings, response);
+                    await leftProviderService.StreamModelResponseAsync(req.LeftProvider.Model, req.Messages, req.ChatRequestSettings, response);
 
                     // Stream right provider response
-                    await rightProviderService.StreamModelResponseAsync(request.RightProvider.Model, request.Messages, request.ChatRequestSettings, response);
+                    await rightProviderService.StreamModelResponseAsync(req.RightProvider.Model, req.Messages, req.ChatRequestSettings, response);
 
                     return;
                 }
 
-                var leftTask = leftProviderService.CallModelAsync(request.LeftProvider.Model, request.Messages, request.ChatRequestSettings);
-                var rightTask = rightProviderService.CallModelAsync(request.RightProvider.Model, request.Messages, request.ChatRequestSettings);
+                var leftTask = leftProviderService.CallModelAsync(req.LeftProvider.Model, req.Messages, req.ChatRequestSettings);
+                var rightTask = rightProviderService.CallModelAsync(req.RightProvider.Model, req.Messages, req.ChatRequestSettings);
                 await Task.WhenAll(leftTask, rightTask);
 
                 await SendAsync(new CompareResponse { LeftResult = await leftTask, RightResult = await rightTask }, cancellation: ct);
