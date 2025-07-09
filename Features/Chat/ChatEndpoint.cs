@@ -35,7 +35,7 @@ namespace ChatbotBenchmarkAPI.Features.Chat
         /// <inheritdoc/>
         public override void Configure()
         {
-            Post("/api/chat");
+            Post("/chat");
             AllowAnonymous();
             Validator<ChatRequestValidator>();
         }

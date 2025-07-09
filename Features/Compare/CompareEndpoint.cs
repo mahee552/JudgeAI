@@ -32,7 +32,7 @@ namespace ChatbotBenchmarkAPI.Features.Compare
         /// <inheritdoc/>
         public override void Configure()
         {
-            Post("/api/compare");
+            Post("/compare");
             AllowAnonymous();
             Validator<CompareRequestValidator>();
         }

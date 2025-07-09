@@ -3,12 +3,10 @@
 // This code is proprietary and confidential.
 // Unauthorized copying of this file, via any medium, is strictly prohibited.
 
-using ChatbotBenchmarkAPI.Business.Validation.ModelValidation;
-using ChatbotBenchmarkAPI.Infrastructure.Services.Factories;
-using ChatbotBenchmarkAPI.Infrastructure.Services.Interfaces;
-using ChatbotBenchmarkAPI.Infrastructure.Services.Providers;
+using ChatbotBenchmarkAPI.Infrastructure.Extenstions;
 using ChatbotBenchmarkAPI.Models.Configurations.Endpoints;
 using FastEndpoints;
+using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,42 +19,30 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
-
 builder.Services.AddFastEndpoints();
+
+builder.Services.SwaggerDocument(o =>
+{
+    o.DocumentSettings = s =>
+    {
+        s.Title = "JudgeAI API";
+        s.Version = "v1";
+    };
+});
 
 builder.Services.Configure<AIEndpointsConfig>(builder.Configuration.GetSection("AIEndpoints"));
 
-builder.Services.AddTransient<OpenAIService>();
-
-builder.Services.AddTransient<DeepSeekService>();
-
-builder.Services.AddTransient<AnthropicService>();
-
-builder.Services.AddTransient<QwenAIService>();
-
-builder.Services.AddTransient<GeminiService>();
-
-builder.Services.AddTransient<MistralAIService>();
-
-builder.Services.AddTransient<XAiService>();
-
-builder.Services.AddTransient<PerplexityService>();
-
-builder.Services.AddTransient<AIModelValidator>();
-
-builder.Services.AddSingleton<IAIProviderFactory, AIProviderFactory>();
+builder.Services.AddAIServices();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerGen();
 }
 
-app.UseFastEndpoints();
+app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
 
 app.UseHttpsRedirection();
 
